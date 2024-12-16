@@ -33,7 +33,7 @@ redaction_levels = {
 }
 
 # Function to redact entities based on user-selected level
-def selective_redact_text(sample_text, level):
+def selective_redact_text(sample_text, level, custom_tags):
     # Ensure the selected level is within the valid range (1 to 10)
     if level < 1 or level > 10:
         print("Invalid selection. Please choose a level between 1 and 10.")
@@ -41,7 +41,11 @@ def selective_redact_text(sample_text, level):
     
     # Get the set of tags to be redacted at the selected level
     tags_to_redact = redaction_levels[level]
-    
+    if custom_tags:
+        tags_to_redact = custom_tags
+    print("#################-------------")
+    print(level)
+    print(tags_to_redact)
     # Process the text to extract entities
     doc, custom_entities = process_text_with_matcher(nlp, sample_text)
     
@@ -489,7 +493,7 @@ def randomize_digits_in_numbers_except_dates_times_and_driving_license_and_money
   
   
 
-def redact_json(sample_text,level):
+def redact_json(sample_text,level,custom_tags):
     if level >= 5 :
       sample_text = generalize_contextual_dates(sample_text)
       
@@ -512,7 +516,7 @@ def redact_json(sample_text,level):
     entity_df = create_entity_dataframe(doc, custom_entities)
     display(entity_df)
 
-    anonymized_text, replacement_map, entities_replaced = selective_redact_text(text, level)
+    anonymized_text, replacement_map, entities_replaced = selective_redact_text(text, level, custom_tags)
 
 # Highlight and display anonymized text
     print("\nHighlighted Anonymized Text:")
@@ -708,19 +712,22 @@ def redact():
         data = request.get_json()
         print("im also here")
 
-        # Check if data is valid
+        # Check if data is validdd
         if not data or "text" not in data or "gradation_level" not in data:
             return jsonify({"error": "Invalid input. 'text' and 'gradation_level' are required."}), 400
 
         # Extract text and gradation level
         text = data["text"]
-        gradation_level = data["gradation_level"]
-
-        print("Received Text:", text)
+        gradation_level = 1
+        if data["gradation_level"] != "default":
+            gradation_level = data["gradation_level"]
+        custom_tags = data["custom_tags"]
+        # print("Received Text:", text)
         print("Received Gradation Level:", gradation_level)
-        gradation_level = int(gradation_level)
+        print("Received Custom Tags:", custom_tags)
+        # gradation_level = int(gradation_level)
         # Call the redact_json function (Assuming this function redacts text based on gradation)
-        redacted_output = redact_json(text, gradation_level)
+        redacted_output = redact_json(text, gradation_level, custom_tags)
 
         # Ensure the output is a dictionary
         # if not isinstance(redacted_output, dict):
@@ -738,4 +745,4 @@ def redact():
       
 if __name__ == '__main__':
     # Run the Flask application on port 8000
-    app.run(host='0.0.0.0', port=8001)
+    app.run(debug=True, host='0.0.0.0', port=8001)

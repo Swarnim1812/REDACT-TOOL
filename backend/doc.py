@@ -146,7 +146,7 @@ def send_to_redaction_process(json_path):
         try:
             response = requests.post(redaction_url, files={"file": json_file})
             response.raise_for_status()
-            return response.json()  # Assuming the second API returns JSON
+            return response.json()  # assuming the second API returns JSON
         except requests.RequestException as e:
             print(e)
             raise Exception(f"Error in redaction process: {e}")
@@ -171,9 +171,12 @@ def redact_document_all():
 
     file = request.files["file"]
     gradation = request.form.get("gradation", "default")
+    custom_gradation = request.form.get("custom_gradation", "[]")
+
     file_type = file.content_type  # Store the file type
     print(file_type)
     print(gradation)
+    print(custom_gradation)
     
     if file.filename == "":
         return jsonify({"message": "No selected file"}), 400
@@ -202,41 +205,6 @@ def redact_document_all():
             #     "X-Replacement-Map": json.dumps(replacement_map, indent=4),
             # },
         )
-
-        
-    # try:
-    #     # Import the CSVProcessor class from your other script
-    #     from docpreprocessing import CSVProcessor  # Assuming your CSV script is named csv_processor.py
-        
-    #     # Initialize the processor
-    #     processor = CSVProcessor()
-        
-    #     # Split the CSV into chunks
-    #     print(file_path)
-    #     processor.split_csv(file_path)
-
-    #     # Process each chunk remotely
-    #     endpoint_url = "http://127.0.0.1:8001/redactionprocess-doc"  # Update with your actual endpoint
-    #     for chunk_file in os.listdir(processor.temp_dir):
-    #         processor.process_chunk_remote(os.path.join(processor.temp_dir, chunk_file), endpoint_url, gradation)
-    #     print("donennnnnnn")
-    #     # Merge processed chunks
-    #     processed_file_path = os.path.join(OUTPUT_FOLDER2, f"processed_{filename}")
-    #     processor.merge_chunks(processed_file_path)
-
-    #     # Clean up temporary files
-    #     processor.cleanup()
-
-    #     # Send the processed CSV as the response
-    #     return send_file(
-    #         processed_file_path,
-    #         as_attachment=True,
-    #         download_name=f"processed_{filename}",
-    #         mimetype="text/csv",
-    #     )
-    # except Exception as e:
-    #     print(f"Error processing CSV: {e}")
-    #     return jsonify({"message": f"Error processing CSV: {e}"}), 500
     
         
     # Get replacement map and other options from form data
@@ -258,7 +226,8 @@ def redact_document_all():
         external_api_url = "http://127.0.0.1:8001/redactionprocess-doc"
         payload = {
             "text": extracted_text,
-            "gradation_level": gradation
+            "gradation_level": gradation,
+            "custom_tags": custom_gradation
         }
         try:
             # print(payload)

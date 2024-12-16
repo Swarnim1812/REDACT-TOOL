@@ -33,7 +33,7 @@ redaction_levels = {
 }
 
 # Function to redact entities based on user-selected level
-def selective_redact_text(sample_text, level):
+def selective_redact_text(sample_text, level, custom_tags):
     # Ensure the selected level is within the valid range (1 to 10)
     if level < 1 or level > 10:
         print("Invalid selection. Please choose a level between 1 and 10.")
@@ -41,7 +41,11 @@ def selective_redact_text(sample_text, level):
     
     # Get the set of tags to be redacted at the selected level
     tags_to_redact = redaction_levels[level]
-    
+    if custom_tags:
+        tags_to_redact = custom_tags
+    print("#################-------------")
+    print(level)
+    print(tags_to_redact)
     # Process the text to extract entities
     doc, custom_entities = process_text_with_matcher(nlp, sample_text)
     
@@ -455,7 +459,11 @@ def randomize_digits_in_numbers_except_dates_times_and_driving_license_and_money
 def redact_json(input_json = "" ):
     sample_json = json.loads(input_json)
     texts = []
-    level = int(sample_json.get("metadata", {}).get("gradation", 4))
+    print("_________________________-")
+    level = 4
+    if sample_json.get("metadata", {}).get("gradation") != "default":
+        level = int(sample_json.get("metadata", {}).get("gradation", 4))
+    custom_tags = sample_json.get("metadata", {}).get("custom_tags", [])
 # Redact text while preserving the position part
     for entry in sample_json["text"]:
         if 'content' in entry.keys(): 
@@ -465,10 +473,15 @@ def redact_json(input_json = "" ):
     doc, custom_entities = process_text_with_matcher(nlp, json.dumps(texts,ensure_ascii=False))
 
 # Combine standard and custom entities
+    print("_____________________________________________")
+    print(doc)
+    print("_________________________________")
+    print(custom_entities)
+    print("_________________________________")
+    print(custom_tags)
     all_entities = [(ent.start_char, ent.end_char, ent.label_, ent.text) for ent in doc.ents]
     all_entities += [(span.start_char, span.end_char, label, span.text) for span, label in custom_entities]
     all_entities = sorted(all_entities, key=lambda x: x[0])
-
 # Display highlighted text with entities
     print("Highlighted Text with Entities:")
     display(highlight_entities(doc, custom_entities))
@@ -482,7 +495,7 @@ def redact_json(input_json = "" ):
     sample_text = sample_text.replace('\"' , '\a')
     print(sample_text)
 # Apply selective redaction based on the chosen level
-    anonymized_text, replacement_map, entities_replaced = selective_redact_text(sample_text, level)
+    anonymized_text, replacement_map, entities_replaced = selective_redact_text(sample_text, level, custom_tags)
 
 # Highlight and display anonymized text
     print("\nHighlighted Anonymized Text:")
@@ -608,7 +621,7 @@ def redact():
 
         # Read file content
         file_content = uploaded_file.read().decode('utf-8')
-
+        print("HI")
         # Call the redact_json function
         redacted_output = redact_json(file_content)
         #print(redacted_output)

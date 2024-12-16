@@ -10,7 +10,7 @@ import { GoArrowRight } from "react-icons/go";
 import { Link } from "react-router-dom";
 
 const Roadmap = () => (
-  <Section className=" h-screen" id="roadmap">
+  <Section className=" h-screen">
     <div className="container md:pb-10">
       <Heading tag="Ready to get started" title="Choose Your File Format" />
 
