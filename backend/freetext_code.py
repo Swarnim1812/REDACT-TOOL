@@ -41,7 +41,10 @@ def selective_redact_text(sample_text, level, custom_tags):
     
     # Get the set of tags to be redacted at the selected level
     tags_to_redact = redaction_levels[level]
-    if custom_tags:
+    
+    custom_tags_len = len(json.loads(custom_tags))
+    print("custom_tags_len",custom_tags_len)
+    if custom_tags_len > 0:
         tags_to_redact = custom_tags
     print("#################-------------")
     print(level)
@@ -515,7 +518,7 @@ def redact_json(sample_text,level,custom_tags):
     print("\nEntity Table:")
     entity_df = create_entity_dataframe(doc, custom_entities)
     display(entity_df)
-
+    print("originallll text :",text)
     anonymized_text, replacement_map, entities_replaced = selective_redact_text(text, level, custom_tags)
 
 # Highlight and display anonymized text
@@ -719,8 +722,9 @@ def redact():
         # Extract text and gradation level
         text = data["text"]
         gradation_level = 1
+        print(text)
         if data["gradation_level"] != "default":
-            gradation_level = data["gradation_level"]
+            gradation_level = int(data["gradation_level"])
         custom_tags = data["custom_tags"]
         # print("Received Text:", text)
         print("Received Gradation Level:", gradation_level)

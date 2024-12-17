@@ -338,7 +338,7 @@ function Redact_doc() {
             >
               BACK
             </NavLink> */}
-            <NavLink to="/"><Button>BACK TO HOME</Button></NavLink>
+            <NavLink to="/get-started"><Button>BACK</Button></NavLink>
           </div>
         </div>
       </Section>
