@@ -189,23 +189,24 @@ def redact_document_all():
 
     
         # Check if file type is CSV
-    if file_type == "text/csv":
-        input_csv_path = file_path
-        output_csv_path = "output.csv"
-        replacement_service_url = "http://127.0.0.1:8001/redactionprocess-doc"
-        extract_unique_tokens_and_replace(input_csv_path, output_csv_path, replacement_service_url)
+    # if file_type == "text/plain":
+    #     print("haanji------------------------")
+    #     input_csv_path = file_path
+    #     output_csv_path = "output.csv"
+    #     replacement_service_url = "http://127.0.0.1:8001/redactionprocess-doc"
+    #     extract_unique_tokens_and_replace(input_csv_path, output_csv_path, replacement_service_url)
         
-        return send_file(
-            redacted_output_path,
-            as_attachment=True,
-            download_name=f"redacted_{filename}",
-            mimetype=file_mimetype,
-            # headers={
-            #     "Content-Disposition": f"attachment; filename=redacted_{filename}",
-            #     "X-Replacement-Map": json.dumps(replacement_map, indent=4),
-            # },
-        )
-    
+    #     return send_file(
+    #         redacted_output_path,
+    #         as_attachment=True,
+    #         download_name=f"redacted_{filename}",
+    #         mimetype=file_mimetype,
+    #         # headers={
+    #         #     "Content-Disposition": f"attachment; filename=redacted_{filename}",
+    #         #     "X-Replacement-Map": json.dumps(replacement_map, indent=4),
+    #         # },
+    #     )
+    print("naaaji------------------------")
         
     # Get replacement map and other options from form data
     replacement_map = request.form.get("replacement_map", "{}")
@@ -216,12 +217,14 @@ def redact_document_all():
 
     
     try:
-        # Process the file using your FileProcessor classes
         processor = DocumentProcessorFactory.create_processor(file_path)
-
-        # Extract text from the document
         extracted_text = processor.extract_text()
+        # if file_type == "text/plain":
+        #     extracted_text = file.read().decode("utf-8")
 
+            # Extract text from the document
+        # Process the file using your FileProcessor classes
+        print("Extracted Text:", extracted_text)
         # Send extracted text to the redaction API
         external_api_url = "http://127.0.0.1:8001/redactionprocess-doc"
         payload = {
