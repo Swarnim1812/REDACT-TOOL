@@ -148,12 +148,17 @@ function Redact_doc() {
   return (
     <>
       <Section className="min-h-screen" id="roadmap">
-        <Heading className="text-center flex flex-col items-center" tag="REDACT YOUR FILE" title="Document Redaction Tool" text="" />
+        <Heading
+          className="text-center flex flex-col items-center"
+          tag="REDACT YOUR FILE"
+          title="Document Redaction Tool"
+          text=""
+        />
         <div className="text-white flex flex-col items-center justify-center px-4">
           <div className="md:flex even:md:translate-y-[4rem] p-0.25 rounded-[2.5rem] bg-conic-gradient overflow-hidden">
-            <div className="p-16 bg-[#090018] rounded-[2.4375rem] w-[43rem] h-full z-10 ">
+            <div className="p-8 sm:p-12 md:p-16 bg-[#090018] rounded-[2.4375rem] w-full max-w-[43rem] h-full z-10">
               <img
-                className="absolute top-[16rem] max-w-full z-[-1]"
+                className="absolute top-[16rem] max-w-full z-[-1] hidden lg:block"
                 src={grid}
                 width={550}
                 height={550}
@@ -175,7 +180,7 @@ function Redact_doc() {
                   </label>
                 </div>
                 {file && (
-                  <div className="mt-4 text-sm text-gray-400">
+                  <div className="mt-4 text-sm text-gray-400 text-center">
                     <p>{file.name}</p>
                     <p className="text-xs text-gray-500">
                       {fileType === "image" ? "Image File" : file.type}
@@ -187,7 +192,7 @@ function Redact_doc() {
                 <div className="mb-6">
                   <button
                     onClick={handleClearFile}
-                    className="bg-red-600 px-4 py-2 w-full sm:w-auto rounded-lg text-lg text-white font-semibold hover:bg-red-500 transition"
+                    className="bg-red-600 px-4 py-2 w-full rounded-lg text-lg text-white font-semibold hover:bg-red-500 transition"
                   >
                     Clear Document
                   </button>
@@ -216,7 +221,7 @@ function Redact_doc() {
                     <span>10</span>
                   </div>
                 </div>
-                <p className="p-4 mt-11 text-sm text-gray-300 bg-gray-700 rounded-lg">
+                <p className="p-4 mt-10 text-sm text-gray-300 bg-gray-700 rounded-lg">
                   {gradationDescriptions[gradation]}
                 </p>
               </div>
@@ -225,14 +230,14 @@ function Redact_doc() {
                 {file && (
                   <button
                     onClick={handlePreview}
-                    className="bg-green-600 px-4 py-2 rounded-lg text-lg text-white font-semibold hover:bg-green-500 transition h-[3rem] w-full sm:w-auto"
+                    className="bg-green-600 px-4 py-2 rounded-lg text-lg text-white font-semibold hover:bg-green-500 transition w-full sm:w-auto"
                   >
                     Preview Document
                   </button>
                 )}
-                <div className="mb-6">
-                  <label className="block text-lg font-medium text-gray-300 mb-4">
-                    Gradation Input type
+                <div className="mb-6 w-full">
+                  <label className="block text-lg font-medium text-gray-300 mb-4 text-center">
+                    Gradation Input Type
                   </label>
                   <select
                     value={useCustomGradation ? "custom" : gradation}
@@ -247,7 +252,7 @@ function Redact_doc() {
                   {useCustomGradation && (
                     <div className="mt-4 flex flex-wrap items-center justify-center">
                       {entities.map((entity) => (
-                        <label key={entity.value} className="block m-1 p-1 w-[15rem]">
+                        <label key={entity.value} className="block m-1 p-1 w-[12rem] sm:w-[15rem]">
                           <input
                             type="checkbox"
                             value={entity.value}
@@ -262,7 +267,7 @@ function Redact_doc() {
                 </div>
                 <Button
                   onClick={handleRedact2}
-                  className={` w-[24rem] ${loading ? "opacity-50 cursor-not-allowed" : ""
+                  className={`w-full sm:w-[24rem] ${loading ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                   disabled={loading}
                   white
@@ -274,12 +279,15 @@ function Redact_doc() {
             </div>
           </div>
           <div className="mt-20">
-            <NavLink to="/get-started"><Button>BACK</Button></NavLink>
+            <NavLink to="/get-started">
+              <Button>BACK</Button>
+            </NavLink>
           </div>
         </div>
       </Section>
     </>
   );
+
 }
 
 export default Redact_doc;

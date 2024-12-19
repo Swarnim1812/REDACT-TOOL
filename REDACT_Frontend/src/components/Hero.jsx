@@ -7,7 +7,6 @@ import Section from "./Section";
 import { BackgroundCircles, BottomLine, Gradient } from "./design/Hero";
 import { heroIcons } from "../constants";
 import { ScrollParallax } from "react-just-parallax";
-// import Generating from "./Generating";
 import Notification from "./Notification";
 import CompanyLogos from "./CompanyLogos";
 import { Gradient3 } from "./design/Roadmap";
@@ -17,8 +16,8 @@ const Hero = () => {
   const [fadeIn, setFadeIn] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setFadeIn(true), 100); // Delay for animation
-    return () => clearTimeout(timer); // Cleanup timeout
+    const timer = setTimeout(() => setFadeIn(true), 100);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -32,9 +31,8 @@ const Hero = () => {
       <div className="container relative" ref={parallaxRef}>
         <div className="relative z-1 max-w-[62rem] mx-auto text-center mb-[3.875rem] md:mb-20 lg:mb-[6.25rem]">
           <h1
-            className={`text-7xl mb-10 font-bold transition-opacity duration-1000 ${
-              fadeIn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
+            className={`text-7xl mb-10 font-bold transition-opacity duration-1000 ${fadeIn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              }`}
           >
             RE-DACT
             <span className="inline-block relative">
@@ -56,7 +54,7 @@ const Hero = () => {
 
               <div className="rounded-b-[0.9rem] overflow-hidden md:aspect-[688/490] lg:aspect-[1024/490]">
                 <img
-                  src={freepik1} 
+                  src={freepik1}
                   className="scale-[1] md:scale-[1] md:-translate-y-[20%] lg:-translate-y-[19%]"
                   width={1200}
                   alt="Hero Illustration"
