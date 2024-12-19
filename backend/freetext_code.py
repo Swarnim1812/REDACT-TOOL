@@ -8,17 +8,12 @@ import random
 from faker import Faker
 import json
 
-# Load the English language model
-nlp = spacy.load("en_core_web_lg")
-
-# Initialize Faker and set a seed for reproducibility
-faker = Faker('en_IN')
+nlp = spacy.load("en_core_web_lg") # Load the English language model
+faker = Faker('en_IN') # Initialize Faker and set a seed for reproducibility
 Faker.seed(42)
 
-# Create a matcher for custom patterns
-matcher = Matcher(nlp.vocab)
+matcher = Matcher(nlp.vocab) # Create a matcher for custom patterns
 
-#Define the 10-Level Redaction Classification System
 redaction_levels = {
     1: {'GPE'},
     2: {'GPE', 'ORG'},
@@ -34,38 +29,27 @@ redaction_levels = {
 
 # Function to redact entities based on user-selected level
 def selective_redact_text(sample_text, level, custom_tags):
-    # Ensure the selected level is within the valid range (1 to 10)
     if level < 1 or level > 10:
         print("Invalid selection. Please choose a level between 1 and 10.")
         return sample_text
-    
-    # Get the set of tags to be redacted at the selected level
+
     tags_to_redact = redaction_levels[level]
-    
     custom_tags_len = len(json.loads(custom_tags))
     print("custom_tags_len",custom_tags_len)
     if custom_tags_len > 0:
         tags_to_redact = custom_tags
-    print("#################-------------")
     print(level)
     print(tags_to_redact)
     # Process the text to extract entities
     doc, custom_entities = process_text_with_matcher(nlp, sample_text)
     
     # Create a list of entities to be replaced
-    entities_to_replace = [(ent.start_char, ent.end_char, ent.label_, ent.text) 
-                           for ent in doc.ents if ent.label_ in tags_to_redact]
-    entities_to_replace += [(span.start_char, span.end_char, label, span.text) 
-                            for span, label in custom_entities if label in tags_to_redact]
+    entities_to_replace = [(ent.start_char, ent.end_char, ent.label_, ent.text) for ent in doc.ents if ent.label_ in tags_to_redact]
+    entities_to_replace += [(span.start_char, span.end_char, label, span.text) for span, label in custom_entities if label in tags_to_redact]
     
-    # Generate synthetic replacements only for the selected entities
     anonymized_text, replacement_map = anonymize_entities(sample_text, entities_to_replace)
-    
     return anonymized_text, replacement_map, entities_to_replace
 
-
-
-# Define patterns to avoid organization classification
 job_title_pattern = [{"LOWER": {"IN": ["ceo", "cto", "cfo", "coo", "president", "director", "manager", "lead", "head"]}}]
 matcher.add("JOB_TITLE", [job_title_pattern])
 
@@ -198,14 +182,10 @@ def generate_aadhaar_number():
     selected_format = random.choice(formats)
     return faker.bothify(text=selected_format)
     
-file_path = "company_and_government.csv"  # Ensure the file is in the same directory as the script
-
+file_path = "company_and_government.csv"
 df = pd.read_csv(file_path)
-
 company_pool = df['company_names']
-
 government_body_pool = df['government_bodies']
-# Function to classify organizations as government or private
 def classify_org(org_name):
     government_keywords = ["ministry", "department", "bureau", "commission", "authority", "service", "council", "board", "agency", "office", "secretariat"]
     return any(keyword in org_name.lower() for keyword in government_keywords)
@@ -218,20 +198,14 @@ def get_org_replacement(entity_text):
         return faker.random_element(company_pool)
 
 def redact_text(text, level):
-    # Load the NLP model
-    doc = nlp(text)
-    
-    # Get the entities for the selected redaction level
+    doc = nlp(text) # Load the NLP model    
     entities_to_redact = redaction_levels.get(level, [])
-
-    # Replace the entities
     redacted_text = text
     for ent in doc.ents:
         if ent.label_ in entities_to_redact:
             redacted_text = redacted_text.replace(ent.text, "[REDACTED]")
     
     return redacted_text
-
 
 def generalize_contextual_dates(text):
     # Replace each contextual date term with its generalized equivalent
@@ -308,7 +282,6 @@ def process_text_with_matcher(nlp, text):
 
     return doc, custom_entities
 
-
 # Entity DataFrame
 def create_entity_dataframe(doc, custom_entities):
     entity_data = []
@@ -333,7 +306,6 @@ def create_entity_dataframe(doc, custom_entities):
 
     return pd.DataFrame(entity_data)
 
-# Highlight entities
 def highlight_entities(doc, custom_entities):
     color_mapping = {
         "PERSON": "blue",
@@ -375,8 +347,6 @@ def highlight_entities(doc, custom_entities):
     html_tokens.append(doc.text[last_end:])
     return HTML(''.join(html_tokens))
 
-
-
 def anonymize_entities(text, entities):
     replacement_map = {}
     anonymized_text = text
@@ -393,7 +363,6 @@ def anonymize_entities(text, entities):
 
     return anonymized_text, replacement_map
 
-# Highlight anonymized text
 def highlight_anonymized_text(original_text, replacement_map):
     highlighted_text = original_text
     for original, replacement in replacement_map.items():
@@ -403,7 +372,6 @@ def highlight_anonymized_text(original_text, replacement_map):
         )
     return HTML(highlighted_text)
 
-# Display the replacement map in a DataFrame
 def display_replacement_map(replacement_map):
     df = pd.DataFrame(list(replacement_map.items()), columns=["Original Text", "Anonymized Text"])
     display(df)
@@ -493,38 +461,34 @@ def randomize_digits_in_numbers_except_dates_times_and_driving_license_and_money
     randomized_text = re.sub('|'.join(date_patterns), randomize_last_two_digits_of_year, randomized_text)
 
     return randomized_text, replacement_map
-  
-  
 
 def redact_json(sample_text,level,custom_tags):
     if level >= 5 :
       sample_text = generalize_contextual_dates(sample_text)
       
     text, original_to_anonymized = randomize_digits_in_numbers_except_dates_times_and_driving_license_and_money(sample_text)
-    
-# Process the text and extract entities
     doc, custom_entities = process_text_with_matcher(nlp, text)
 
-# Combine standard and custom entities
+    # Combine standard and custom entities
     all_entities = [(ent.start_char, ent.end_char, ent.label_, ent.text) for ent in doc.ents]
     all_entities += [(span.start_char, span.end_char, label, span.text) for span, label in custom_entities]
     all_entities = sorted(all_entities, key=lambda x: x[0])
 
-# Display highlighted text with entities
+    # Display highlighted text with entities
     print("Highlighted Text with Entities:")
-    display(highlight_entities(doc, custom_entities))
+    # display(highlight_entities(doc, custom_entities))
 
-# Display entities in a table
+    # Display entities in a table
     print("\nEntity Table:")
     entity_df = create_entity_dataframe(doc, custom_entities)
-    display(entity_df)
-    print("originallll text :",text)
+    # display(entity_df)
+    # print("originallll text :",text)
+    
     anonymized_text, replacement_map, entities_replaced = selective_redact_text(text, level, custom_tags)
 
 # Highlight and display anonymized text
-    print("\nHighlighted Anonymized Text:")
-    display(highlight_anonymized_text(anonymized_text, replacement_map))
-    
+    # print("\nHighlighted Anonymized Text:")
+    # display(highlight_anonymized_text(anonymized_text, replacement_map))
     
     def display_replacement_map(replacement_map, original_to_anonymized):
         """
@@ -548,7 +512,6 @@ def redact_json(sample_text,level,custom_tags):
         print(json.dumps(merged_map, indent=4))
         return merged_map
 
-    print("\nReplacement Map:")
     # display_replacement_map(replacement_map)
     # display_replacement_map(original_to_anonymized)
 
@@ -558,12 +521,7 @@ def redact_json(sample_text,level,custom_tags):
     print(mmap)
     return mmap
     
-    
-    
-    
-    
 from rouge_score import rouge_scorer
-
 # Function to evaluate ROUGE scores between original and anonymized texts
 def evaluate_context_preservation(original_text, anonymized_text):
     # Initialize ROUGE scorer
@@ -581,15 +539,6 @@ def evaluate_context_preservation(original_text, anonymized_text):
     }
 
     return evaluation_metrics
-
-# Example usage
-#anonymized_text, replacement_map = anonymize_entities(sample_text, [(ent.start_char, ent.end_char, ent.label_, ent.text) for ent in doc.ents])
-#metrics = evaluate_context_preservation(sample_text, anonymized_text)
-
-#print("ROUGE Evaluation Metrics:")
-#for metric, values in metrics.items():
- #   print(f"{metric}: {values}")
-
 
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 from nltk.tokenize import word_tokenize
@@ -617,128 +566,29 @@ def calculate_bleu_score(reference_text, anonymized_text):
 
     return bleu_score
 
-# Compute BLEU score between the reference and anonymized output
-#bleu_score = calculate_bleu_score(sample_text, anonymized_text)
-#print(f"BLEU Score: {bleu_score}")
-#
-#
-#
-#from sklearn.metrics.pairwise import cosine_similarity
-#import numpy as np
-#
-#
-#
-## Example reference and anonymized texts
-#
-#
-#
-## Tokenize and get embeddings
-#ref_doc = nlp(sample_text)
-#anon_doc = nlp(anonymized_text)
-#
-## Get embeddings for each token
-#ref_embeddings = np.array([token.vector for token in ref_doc if token.has_vector])
-#anon_embeddings = np.array([token.vector for token in anon_doc if token.has_vector])
-#
-## Calculate cosine similarity
-#similarity_matrix = cosine_similarity(anon_embeddings, ref_embeddings)
-#avg_similarity = np.mean(np.max(similarity_matrix, axis=1))  # Precision-like metric
-
-#print("Average similarity:", avg_similarity)
-
 from flask import Flask, request, jsonify
 import json
-# from final_model_full_code import redact_json
 
-# Initialize Flask application
 app = Flask(__name__)
 
-# @app.route('/redactionprocess-doc', methods=['POST'])
-# def redact():
-#     try:
-#         # Check if a file is included in the request
-#         print("mai yaha huuuuuuuuuuuuu idhr")
-#         # if 'file' not in request.files:
-#         #     return jsonify({"error": "No file part in the request"}), 400
-
-#         print("Request Data:",request.headers)
-#         data = request.get_json()
-#         print("im also here")
-#         # if not data or "text" not in data or "gradation_level" not in data:
-#         #     return jsonify({"error": "Invalid input. 'text' and 'gradation_level' are required."}), 400
-
-#         # Extract text and gradation level
-#         data = []
-#         text = data["text"]
-#         gradation_level = data["gradation_level"]
-
-#         print("Received Text:", text)
-#         print("Received Gradation Level:", gradation_level)
-        
-#         redacted_output = redact_json(text, gradation_level)
-
-#         # Ensure the output is a dictionary
-#         if not isinstance(redacted_output, dict):
-#             return jsonify({"error": "Unexpected response from redact_json function."}), 500
-
-#         print("Redacted Output:", redacted_output)
-
-#         # Return the redacted replacement map
-#         return jsonify(redacted_output), 200
-
-#     except Exception as e:
-#         print(f"An error occurred: {str(e)}")
-#         return jsonify({"error": str(e)}), 500
-
-
-#         # Get the file from the request
-#         # uploaded_file = request.files['file']
-
-#         # if uploaded_file.filename == '':
-#         #     return jsonify({"error": "No file selected"}), 400
-
-#         # # Read file content
-#         # file_content = uploaded_file.read().decode('utf-8')
-
-#         # Call the redact_json function
-#         # redacted_output = redact_json(file_content)
-#         # print(redacted_output)
-#         # # Return the redacted JSON
-#         # return jsonify(json.loads(redacted_output))
 @app.route('/redactionprocess-doc', methods=['POST'])
 def redact():
     try:
-        # Print request headers
         print("Request Headers:", request.headers)
+        data = request.get_json() # Get JSON payload
 
-        # Get JSON payload
-        data = request.get_json()
-        print("im also here")
-
-        # Check if data is validdd
         if not data or "text" not in data or "gradation_level" not in data:
-            return jsonify({"error": "Invalid input. 'text' and 'gradation_level' are required."}), 400
+            return jsonify({"error": "Invalid input. 'text' and 'gradation_level' are required."}), 400 # Check if data is valid
 
-        # Extract text and gradation level
         text = data["text"]
         gradation_level = 1
-        print(text)
         if data["gradation_level"] != "default":
             gradation_level = int(data["gradation_level"])
         custom_tags = data["custom_tags"]
-        # print("Received Text:", text)
         print("Received Gradation Level:", gradation_level)
         print("Received Custom Tags:", custom_tags)
-        # gradation_level = int(gradation_level)
-        # Call the redact_json function (Assuming this function redacts text based on gradation)
-        redacted_output = redact_json(text, gradation_level, custom_tags)
-
-        # Ensure the output is a dictionary
-        # if not isinstance(redacted_output, dict):
-        #     return jsonify({"error": "Unexpected response from redact_json function."}), 500
-        print("Redacted Output:", redacted_output)
-        # Return the redacted replacement map
         
+        redacted_output = redact_json(text, gradation_level, custom_tags)
         return jsonify(redacted_output), 200
 
     except Exception as e:

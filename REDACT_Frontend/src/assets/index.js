@@ -91,7 +91,23 @@ import TeamLogo from "./TeamLogo.png"
 import TeamLogo2 from "./TeamLogo2.png"
 
 import vidicon from "./video.png"
+import github from "./github.png"
+import linkedin from "./linkedin.png"
+import satorugojo from "./satorugojo.jpg"
+import sphere from "./sphere.png"
+import freepik1 from "./freepik1.jpg"
+import freepik3 from "./freepik3.jpg"
+import newbg from "./newbg.jpg"
+import Freepik1 from "./svg/Freepik1";
+
 export {
+  newbg,
+  freepik1,
+  freepik3,
+  sphere,
+  satorugojo,
+  github,
+  linkedin,
   TeamLogo2,
   TeamLogo,
   privacy,

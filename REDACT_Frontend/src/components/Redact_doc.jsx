@@ -14,17 +14,29 @@ function Redact_doc() {
   const [useCustomGradation, setUseCustomGradation] = useState(false);
 
   const gradationDescriptions = {
-    1: "Level 1: GPE (City/Location)",
-    2: "Level 2: GPE, ORG (Organization)",
-    3: "Level 3: GPE, ORG, JOB_TITLE",
-    4: "Level 4: GPE, ORG, JOB_TITLE, PERSON (Name)",
-    5: "Level 5: GPE, ORG, JOB_TITLE, PERSON, TRANSACTION (Amount, Date), TIME (Meeting Time)",
-    6: "Level 6: GPE, ORG, JOB_TITLE, PERSON, TRANSACTION, TIME, PHONE_NUMBER, EMAIL",
-    7: "Level 7: GPE, ORG, JOB_TITLE, PERSON, TRANSACTION, TIME, PHONE_NUMBER, EMAIL, DRIVING_LICENSE, VOTER_ID",
-    8: "Level 8: GPE, ORG, JOB_TITLE, PERSON, TRANSACTION, TIME, PHONE_NUMBER, EMAIL, DRIVING_LICENSE, VOTER_ID, IFSC_CODE, UPI_ID, GSTIN",
-    9: "Level 9: GPE, ORG, JOB_TITLE, PERSON, TRANSACTION, TIME, PHONE_NUMBER, EMAIL, DRIVING_LICENSE, VOTER_ID, IFSC_CODE, UPI_ID, GSTIN, BANK_ACCOUNT, CREDIT_CARD, EPF_NUMBER",
-    10: "Level 10: GPE, ORG, JOB_TITLE, PERSON, TRANSACTION, TIME, PHONE_NUMBER, EMAIL, DRIVING_LICENSE, VOTER_ID, IFSC_CODE, UPI_ID, GSTIN, BANK_ACCOUNT, CREDIT_CARD, EPF_NUMBER, AADHAAR_NUMBER, PAN_NUMBER, PASSPORT_NUMBER",
+    1: "Location",
+    2: "Location, Organization",
+    3: "Location, Organization, Job title",
+    4: "Location, Organization, Job title, Person's name",
+    5: "Location, Organization, Job title, Person's name, Amount, Date, Time",
+    6: "Location, Organization, Job title, Person's name, Amount, Date, Time, Phone number, Email",
+    7: "Location, Organization, Job title, Person's name, Amount, Date, Time, Phone number, Email, Driving License, Voter ID",
+    8: "Location, Organization, Job title, Person's name, Amount, Date, Time, Phone number, Email, Driving License, Voter ID, IFSC code, UPI ID, GSTIN",
+    9: "Location, Organization, Job title, Person's name, Amount, Date, Time, Phone number, Email, Driving License, Voter ID, IFSC code, UPI ID, GSTIN, Bank account, Credit card number, EPF number",
+    10: "Location, Organization, Job title, Person's name, Amount, Date, Time, Phone number, Email, Driving License, Voter ID, IFSC code, UPI ID, GSTIN, Bank account, Credit card number, EPF number, Aahaar number, PAN number, Passport number",
   };
+  // const gradationDescriptions = {
+  //   1: "Level 1: (City/Location)",
+  //   2: "Level 2: GPE, ORG (Organization)",
+  //   3: "Level 3: GPE, ORG, JOB_TITLE",
+  //   4: "Level 4: GPE, ORG, JOB_TITLE, PERSON (Name)",
+  //   5: "Level 5: GPE, ORG, JOB_TITLE, PERSON, TRANSACTION (Amount, Date), TIME (Meeting Time)",
+  //   6: "Level 6: GPE, ORG, JOB_TITLE, PERSON, TRANSACTION, TIME, PHONE_NUMBER, EMAIL",
+  //   7: "Level 7: GPE, ORG, JOB_TITLE, PERSON, TRANSACTION, TIME, PHONE_NUMBER, EMAIL, DRIVING_LICENSE, VOTER_ID",
+  //   8: "Level 8: GPE, ORG, JOB_TITLE, PERSON, TRANSACTION, TIME, PHONE_NUMBER, EMAIL, DRIVING_LICENSE, VOTER_ID, IFSC_CODE, UPI_ID, GSTIN",
+  //   9: "Level 9: GPE, ORG, JOB_TITLE, PERSON, TRANSACTION, TIME, PHONE_NUMBER, EMAIL, DRIVING_LICENSE, VOTER_ID, IFSC_CODE, UPI_ID, GSTIN, BANK_ACCOUNT, CREDIT_CARD, EPF_NUMBER",
+  //   10: "Level 10: GPE, ORG, JOB_TITLE, PERSON, TRANSACTION, TIME, PHONE_NUMBER, EMAIL, DRIVING_LICENSE, VOTER_ID, IFSC_CODE, UPI_ID, GSTIN, BANK_ACCOUNT, CREDIT_CARD, EPF_NUMBER, AADHAAR_NUMBER, PAN_NUMBER, PASSPORT_NUMBER",
+  // };
   const entities = [
     { label: "GPE (City/Location)", value: "GPE" },
     { label: "ORG (Organization)", value: "ORG" },
@@ -50,20 +62,9 @@ function Redact_doc() {
   const handleFileUpload = (e) => {
     setFile(e.target.files[0]);
   };
-
   const handleGradationChange = (e) => {
     setGradation(e.target.value);
   };
-  // const handleCustomSelectionChange = (e) => {
-  //   const { value, checked } = e.target;
-  //   setCustomGradation((prev) => {
-  //     if (checked) {
-  //       return [...prev, value]; // Add the selected tag
-  //     } else {
-  //       return prev.filter((tag) => tag !== value); // Remove the deselected tag
-  //     }
-  //   });
-  // };
   const handleCustomSelectionChange = (e) => {
     const { value, checked } = e.target;
     setCustomGradation((prev) => {
@@ -82,59 +83,9 @@ function Redact_doc() {
       alert("Please upload a document first!");
     }
   };
-
   const handleClearFile = () => {
     setFile(null);
   };
-
-  // const handleRedact = async () => {
-  //   if (!file) {
-  //     alert("Please upload a document first!");
-  //     return;
-  //   }
-
-  //   setLoading(true);
-
-  //   const formData = new FormData();
-  //   formData.append("file", file);
-  //   // formData.append("gradation", gradation);
-  //   console.log(customGradation)
-  //   if (useCustomGradation) {
-  //     formData.append("custom_gradation", JSON.stringify(customGradation));
-  //   } else {
-  //     formData.append("gradation", gradation);
-  //   }
-  //   console.log(formData)
-  //   try {
-  //     const response = await fetch("http://localhost:5000/redact-img", {
-  //       method: "POST",
-  //       body: formData,
-  //     });
-
-  //     if (response.ok) {
-  //       const blob = await response.blob();
-
-  //       // Create a downloadable link
-  //       const url = window.URL.createObjectURL(blob);
-  //       const link = document.createElement("a");
-  //       link.href = url;
-  //       link.download = "final_output.pdf"; // File name for the downloaded PDF
-  //       link.click();
-
-  //       // Clean up the object URL
-  //       window.URL.revokeObjectURL(url);
-
-  //       // alert("Document redacted and downloaded successfully!");
-  //     } else {
-  //       alert("Failed to redact the document.");
-  //     }
-  //   } catch (error) {
-  //     const errorData = await response.json();
-  //     alert(`Failed to redact the document: ${errorData.message}`);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const handleRedact2 = async () => {
     if (!file) {
       alert("Please upload a document first!");
@@ -145,7 +96,6 @@ function Redact_doc() {
 
     const formData = new FormData();
     formData.append("file", file);
-    // formData.append("gradation", gradation);
     console.log(customGradation)
     if (useCustomGradation) {
       formData.append("custom_gradation", JSON.stringify(customGradation));
@@ -153,14 +103,10 @@ function Redact_doc() {
       formData.append("gradation", gradation);
     }
     console.log(formData)
-    const fileType = file.type.split("/")[0]; // Get the type (e.g., "image" or "application")
-    try {
-      // const response = await fetch("http://localhost:5000/redact-document", {
-      //   method: "POST",
-      //   body: formData,
-      // });
-      let response;
+    const fileType = file.type.split("/")[0];
 
+    try {
+      let response;
       // Check if the file is an image or other type
       if (fileType === "image") {
         response = await fetch("http://localhost:5000/redact-img", {
@@ -175,39 +121,34 @@ function Redact_doc() {
       }
 
       if (response.ok) {
-
         const blob = await response.blob();
-
-        // Create a downloadable link
         const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
+        const link = document.createElement("a"); // Create a downloadable link
         link.href = url;
-        // link.download = "final_output.pdf"; // File name for the downloaded PDF
         link.download = response.file_name || "redacted_output"; // File name for the downloaded PDF
         link.click();
 
         // Clean up the object URL
         window.URL.revokeObjectURL(url);
-
-        // alert("Document redacted and downloaded successfully!");
-      } else {
+      }
+      else {
         alert("Failed to redact the document.");
       }
-    } catch (error) {
+    }
+    catch (error) {
       const errorData = await response.json();
       alert(`Failed to redact the document: ${errorData.message}`);
-    } finally {
+    }
+    finally {
       setLoading(false);
     }
   };
-
   const fileType = file ? file.type.split("/")[0] : "";
 
   return (
     <>
       <Section className="min-h-screen" id="roadmap">
         <Heading className="text-center flex flex-col items-center" tag="REDACT YOUR FILE" title="Document Redaction Tool" text="" />
-        {/* <div className="bg-blue-700 h-[30rem] w-[49rem] fixed blur-[2.5rem] transform translate-x-[30rem] rounded-full  z-[-1] opacity-50"></div> */}
         <div className="text-white flex flex-col items-center justify-center px-4">
           <div className="md:flex even:md:translate-y-[4rem] p-0.25 rounded-[2.5rem] bg-conic-gradient overflow-hidden">
             <div className="p-16 bg-[#090018] rounded-[2.4375rem] w-[43rem] h-full z-10 ">
@@ -319,25 +260,20 @@ function Redact_doc() {
                     </div>
                   )}
                 </div>
-                <button
+                <Button
                   onClick={handleRedact2}
-                  className={`bg-green-800 px-4 py-2 rounded-lg text-lg text-white font-semibold hover:bg-green-700 transition h-[6rem] w-full sm:w-auto ${loading ? "opacity-50 cursor-not-allowed" : ""
+                  className={` w-[24rem] ${loading ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                   disabled={loading}
+                  white
                 >
                   {loading ? "Processing and Downloading..." : "Redact and Download"}
-                </button>
+                </Button>
                 <Gradient2 />
               </div>
             </div>
           </div>
-          <div className="mt-10">
-            {/* <NavLink
-              to="/get-started"
-              className="bg-blue-900 opacity-50 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition"
-            >
-              BACK
-            </NavLink> */}
+          <div className="mt-20">
             <NavLink to="/get-started"><Button>BACK</Button></NavLink>
           </div>
         </div>

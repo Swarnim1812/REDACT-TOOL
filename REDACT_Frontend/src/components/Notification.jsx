@@ -1,12 +1,12 @@
-import { notification1 } from "../assets";
+import { notification1, sphere } from "../assets";
 import { notificationImages } from "../constants";
-import { anony } from "../assets";
+import { anony, brainwaveSymbol } from "../assets";
 const Notification = ({ className, title }) => {
   return (
     <div
       className={`${className || ""} flex items-center p-4 pr-6 bg-n-9/40 backdrop-blur border border-n-1/10 rounded-2xl gap-5`}>
       <img
-        src={anony}
+        src={sphere}
         width={62}
         height={62}
         alt="image"

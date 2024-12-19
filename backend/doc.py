@@ -5,18 +5,23 @@ import os
 import json
 from json import dump
 import requests
-# Import the ImageProcessor class from your Python script
-from preprocessing import ImageProcessor
+
+from preprocessing import ImageProcessor # Import the ImageProcessor class from Python script
 from docpreprocessing import DocumentProcessorFactory
 
-# Initialize Flask app
-app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+import pandas as pd
+import requests
+import re
+from collections import defaultdict
 
+app = Flask(__name__) # Initialize Flask app
+CORS(app) # Enable CORS for all routes
 # Set upload folder and allowed extensions
 UPLOAD_FOLDER = "./uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+#----------------------------------------------------------------------------------------------
 
 @app.route("/redact-img", methods=["POST"])
 def redact_document():
@@ -27,8 +32,7 @@ def redact_document():
 
     if file.filename == "":
         return jsonify({"message": "No selected file"}), 400
-
-    # Get gradation level from the form data
+    
     gradation = request.form.get("gradation", "default")  # Default value if not provided
     custom_gradation = request.form.get("custom_gradation", "[]")
     try:
@@ -36,14 +40,12 @@ def redact_document():
     except json.JSONDecodeError:
         return jsonify({"message": "Invalid custom_gradation format"}), 400
     
-    
     filename = secure_filename(file.filename)
     file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
     file.save(file_path)
     print(file_path)
     try:
-        # Process the file using your ImageProcessor class
-        processor = ImageProcessor()
+        processor = ImageProcessor() # Process the file using your ImageProcessor class
         processor.process_image(file_path)
 
         # Save output to a specific file and get the JSON data
@@ -79,7 +81,6 @@ def redact_document():
         processor.text_objects = redacted_obj['text']
         processor.reconstruct_pdf(pdf_output_path, "./telea_transparent.png")
 
-
         # return jsonify({"message": "File has been processed and redacted successfully!"}), 200
         return send_file(pdf_output_path, as_attachment=True, download_name="final_output.pdf")
 
@@ -87,10 +88,6 @@ def redact_document():
         return jsonify({"message": f"Error processing file: {e}"}), 500
     finally:
         os.remove(file_path)
-import pandas as pd
-import requests
-import re
-from collections import defaultdict
 
 def extract_unique_tokens_and_replace(input_csv, output_csv, service_url):
     """
@@ -135,9 +132,6 @@ def extract_unique_tokens_and_replace(input_csv, output_csv, service_url):
     # Step 6: Save the updated DataFrame to a new CSV file
     df.to_csv(output_csv, index=False)
 
-# Example usage
-
-
 # extract_unique_tokens_and_replace(, output_csv_path, replacement_service_url)       
 def send_to_redaction_process(json_path):
     """Send the combined JSON data to the redaction API."""
@@ -152,8 +146,7 @@ def send_to_redaction_process(json_path):
             raise Exception(f"Error in redaction process: {e}")
 
 
-
-
+# ----------------------------------------------------------------------------------------------
 
 
 # # Set upload folder and allowed extensions
@@ -164,6 +157,8 @@ os.makedirs(OUTPUT_FOLDER2, exist_ok=True)
 
 app.config["UPLOAD_FOLDER2"] = UPLOAD_FOLDER2
 app.config["OUTPUT_FOLDER2"] = OUTPUT_FOLDER2
+
+
 @app.route("/redact-document", methods=["POST"])
 def redact_document_all():
     if "file" not in request.files:
@@ -184,31 +179,7 @@ def redact_document_all():
     filename = secure_filename(file.filename)
     file_path = os.path.join(app.config["UPLOAD_FOLDER2"], filename)
     file.save(file_path)
-    print("#########################")
-    print(file_path)
-
-    
-        # Check if file type is CSV
-    # if file_type == "text/plain":
-    #     print("haanji------------------------")
-    #     input_csv_path = file_path
-    #     output_csv_path = "output.csv"
-    #     replacement_service_url = "http://127.0.0.1:8001/redactionprocess-doc"
-    #     extract_unique_tokens_and_replace(input_csv_path, output_csv_path, replacement_service_url)
-        
-    #     return send_file(
-    #         redacted_output_path,
-    #         as_attachment=True,
-    #         download_name=f"redacted_{filename}",
-    #         mimetype=file_mimetype,
-    #         # headers={
-    #         #     "Content-Disposition": f"attachment; filename=redacted_{filename}",
-    #         #     "X-Replacement-Map": json.dumps(replacement_map, indent=4),
-    #         # },
-    #     )
-    print("naaaji------------------------")
-        
-    # Get replacement map and other options from form data
+            
     replacement_map = request.form.get("replacement_map", "{}")
     try:
         replacement_map = json.loads(replacement_map)  # Convert JSON string to Python dict
@@ -219,13 +190,6 @@ def redact_document_all():
     try:
         processor = DocumentProcessorFactory.create_processor(file_path)
         extracted_text = processor.extract_text()
-        # if file_type == "text/plain":
-        #     extracted_text = file.read().decode("utf-8")
-
-            # Extract text from the document
-        # Process the file using your FileProcessor classes
-        print("Extracted Text:", extracted_text)
-        # Send extracted text to the redaction API
         external_api_url = "http://127.0.0.1:8001/redactionprocess-doc"
         payload = {
             "text": extracted_text,
@@ -233,43 +197,25 @@ def redact_document_all():
             "custom_tags": custom_gradation
         }
         try:
-            # print(payload)
             response = requests.post(external_api_url, json=payload, headers={"Content-Type": "application/json"})
-
-            # response.raise_for_status()
             replacement_map = response.json() if isinstance(response.json(), dict) else {}  # Ensure it's a dict
 
-            
-            
-            
         except requests.RequestException as e:
             return jsonify({"message": f"Error communicating with external API: {e}"}), 500
 
         # Perform redaction and reconstruct the document
         redacted_output_path = os.path.join(OUTPUT_FOLDER2, f"redacted_{filename}")
-        print(redacted_output_path)
         processor.replace_text(replacement_map, output_path=redacted_output_path)
-        print(OUTPUT_FOLDER2)
-        # Send reconstructed PDF and response data
-        
-        print(redacted_output_path)
-        
+                
         from mimetypes import guess_type
+        file_mimetype, _ = guess_type(redacted_output_path) # Dynamically determine MIME type based on the file extension
 
-# Dynamically determine MIME type based on the file extension
-        file_mimetype, _ = guess_type(redacted_output_path)
-        
         return send_file(
             redacted_output_path,
             as_attachment=True,
             download_name=f"redacted_{filename}",
             mimetype=file_mimetype,
-            # headers={
-            #     "Content-Disposition": f"attachment; filename=redacted_{filename}",
-            #     "X-Replacement-Map": json.dumps(replacement_map, indent=4),
-            # },
         )
-
     except requests.RequestException as e:
         print(f"Error communicating with the redaction API: {e}")
         return jsonify({"message": f"Error communicating with the redaction API: {e}"}), 500
@@ -279,9 +225,8 @@ def redact_document_all():
         return jsonify({"message": f"Error processing file: {e}"}), 500
 
     finally:
-        # Cleanup uploaded file
         if os.path.exists(file_path):
-            os.remove(file_path)
+            os.remove(file_path) # Cleanup uploaded file
 
 
 if __name__ == "__main__":

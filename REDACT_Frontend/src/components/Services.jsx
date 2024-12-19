@@ -9,12 +9,12 @@ import {
   VideoChatMessage,
 } from "./design/Services";
 
-import Generating from "./Generating";
+// import Generating from "./Generating";
 
 const Services = () => {
   return (
     <Section id="how-to-use">
-      <div className="container">
+      {/* <div className="container">
         <Heading
           title="Generative AI made for creators."
           text="Brainwave unlocks the potential of AI-powered applications"
@@ -125,7 +125,7 @@ const Services = () => {
 
           <Gradient />
         </div>
-      </div>
+      </div> */}
     </Section>
   );
 };

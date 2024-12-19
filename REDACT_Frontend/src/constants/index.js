@@ -39,42 +39,46 @@ import {
   telegram,
   twitter,
   yourlogo,
-  TeamLogo2
+  TeamLogo2,
+  github,
+  linkedin,
+  satorugojo,
+  newbg,
 } from "../assets";
 
 export const navigation = [
   {
     id: "0",
+    title: "HOME",
+    url: "#",
+  },
+  {
+    id: "1",
     title: "Features",
     url: "#features",
   },
   {
-    id: "1",
-    title: "Tech Stack",
-    url: "#",
-  },
-  {
     id: "2",
     title: "About Us",
-    url: "#",
+    url: "#footer",
   },
   // {
   //   id: "3",
   //   title: "Roadmap",
   //   url: "#roadmap",
   // },
-  {
-    id: "4",
-    title: "New account",
-    url: "/get-started",
-    onlyMobile: true,
-  },
-  {
-    id: "5",
-    title: "Sign",
-    url: "/get-started",
-    onlyMobile: true,
-  },
+  // {
+  //   id: "4",
+  //   title: "New account",
+  //   url: "/get-started",
+  //   onlyMobile: true,
+  // },
+  // {
+  //   id: "5",
+  //   title: "Sign",
+  //   url: "/get-started",
+  //   onlyMobile: true,
+  // },
 ];
 
 export const heroIcons = [homeSmile, file02, searchMd, plusSquare];
@@ -136,7 +140,7 @@ export const roadmap = [
   {
     id: "0",
     title: "Text Redaction",
-    text: "Allows you to upload documents like PDFs, word documents, or images and redact sensitive information.",
+    text: "Allows you to upload documents like PDFs, word documents, plain text files, powerpoint presentations or images and redact sensitive information.",
     date: "1",
     status: "done",
     url: "/redact-doc",
@@ -292,7 +296,7 @@ export const benefits = [
     text: "Redact ensures that sensitive data, such as personally identifiable information (PII) or confidential content, is securely anonymized or removed, protecting individuals' and organizations' privacy.",
     backgroundUrl: "./src/assets/benefits/card-1.svg",
     iconUrl: benefitIcon1,
-    imageUrl: privacy,
+    imageUrl: newbg,
   },
   {
     id: "1",
@@ -300,7 +304,7 @@ export const benefits = [
     text: "Reducing exposure to sensitive information minimizes risks of data breaches, misuse, or unauthorized access.",
     backgroundUrl: "./src/assets/benefits/card-2.svg",
     iconUrl: benefitIcon2,
-    imageUrl: adhar,
+    imageUrl: newbg,
     light: true,
   },
   {
@@ -309,7 +313,7 @@ export const benefits = [
     text: "Tailored redaction rules to detect specific patterns  such as:Classified document labels.Government IDs like AADHAAR or PAN",
     backgroundUrl: "./src/assets/benefits/card-3.svg",
     iconUrl: benefitIcon3,
-    imageUrl: privacy,
+    imageUrl: newbg,
   },
   {
     id: "3",
@@ -317,7 +321,7 @@ export const benefits = [
     text: "Lets users quickly set the level of Redaction according to thier requirement on a pre-defined scale of 1(least)-10(most) sensitive.",
     backgroundUrl: "./src/assets/benefits/card-4.svg",
     iconUrl: benefitIcon4,
-    imageUrl: scale,
+    imageUrl: newbg,
     light: true,
   },
   {
@@ -326,7 +330,7 @@ export const benefits = [
     text: "The use of realistic replacements (e.g., Faker-generated data) ensures that the text remains useful for analysis or testing, even after anonymization.",
     backgroundUrl: "./src/assets/benefits/card-5.svg",
     iconUrl: benefitIcon1,
-    imageUrl: context,
+    imageUrl: newbg,
   },
   {
     id: "5",
@@ -334,38 +338,20 @@ export const benefits = [
     text: "The implementation can handle large datasets efficiently, making it suitable for projects requiring bulk anonymization.",
     backgroundUrl: "./src/assets/benefits/card-6.svg",
     iconUrl: benefitIcon2,
-    imageUrl: scalability,
+    imageUrl: newbg,
   },
 ];
 export const socials = [
   {
-    id: "0",
-    title: "Discord",
-    iconUrl: discordBlack,
-    url: "#",
-  },
-  {
     id: "1",
-    title: "Twitter",
-    iconUrl: twitter,
-    url: "#",
+    title: "Github",
+    iconUrl: github,
+    url: "https://github.com/Swarnim1812",
   },
   {
     id: "2",
-    title: "Instagram",
-    iconUrl: instagram,
-    url: "#",
-  },
-  {
-    id: "3",
-    title: "Telegram",
-    iconUrl: telegram,
-    url: "#",
-  },
-  {
-    id: "4",
-    title: "Facebook",
-    iconUrl: facebook,
-    url: "#",
+    title: "LinkedIn",
+    iconUrl: linkedin,
+    url: "https://www.linkedin.com/in/swarnim-raj-496106260/",
   },
 ];

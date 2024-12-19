@@ -7,14 +7,12 @@ import Redact_Video from './Redact_Video'
 
 const Allroutes = () => {
   return (
-    // <BrowserRouter>
       <Routes>
         <Route path='/' element={<Landingpage />} />
         <Route path='/get-started' element={<StartingPage />} />
         <Route path='/redact-doc' element={<Redact_doc />} />
         <Route path='/Redact-Video' element={<Redact_Video />} />
       </Routes>
-    // </BrowserRouter>
   )
 }
 export default Allroutes
