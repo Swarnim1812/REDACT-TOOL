@@ -192,7 +192,7 @@ function Redact_doc() {
                 <div className="mb-6">
                   <button
                     onClick={handleClearFile}
-                    className="bg-red-600 px-4 py-2 w-full rounded-lg text-lg text-white font-semibold hover:bg-red-500 transition"
+                    className="bg-red-900 px-4 py-2 w-full rounded-lg text-lg text-white font-semibold hover:bg-red-500 transition"
                   >
                     Clear Document
                   </button>

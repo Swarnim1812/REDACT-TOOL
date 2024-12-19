@@ -123,17 +123,17 @@ class TextFileProcessor(FileProcessor):
         if file_type == "txt":
             with open(self.file_path, "r", encoding="utf-8") as file:
                 text = file.read()
-        # elif file_type == "csv":
-        #     with open(self.file_path, "r", encoding="utf-8") as file:
-        #         reader = csv.reader(file)
-        #         text = "\n".join([", ".join(row) for row in reader])
+        elif file_type == "csv":
+            with open(self.file_path, "r", encoding="utf-8") as file:
+                reader = csv.reader(file)
+                text = "\n".join([", ".join(row) for row in reader])
         elif file_type == "xml":
             tree = ET.parse(self.file_path)
             root = tree.getroot()
             text = self._parse_xml_element(root)
         return text
 
-    def replace_text(self, replacement_map, output_path="output"):
+    def replace_text(self, replacement_map, output_path="output.csv"):
         file_type = self._get_file_type()
         if file_type == "txt":
             with open(self.file_path, "r", encoding="utf-8") as file:
@@ -142,22 +142,22 @@ class TextFileProcessor(FileProcessor):
                 content = content.replace(word, replacement)
             with open(output_path, "w", encoding="utf-8") as file:
                 file.write(content)
-        # elif file_type == "csv":
-            # with open(self.file_path,"r",encoding="utf-8") as file:
-            #   reader = csv.reader(file)
-            #   rows = []
-            #   for row in reader:
-            #     new_row = [
-            #       cell for cell in row
-            #     ]
-            #     for i , cell in enumerate(new_row):
-            #         for word , replacement in replacement_map.items():
-            #             if word in cell: 
-            #               new_row[i] = cell.replace(word, replacement)
-            #         rows.append(new_row)
-            # with open(output_path , "w", encoding="utf-8",newline="") as file:
-            #     writer = csv.writer(file)
-            #     writer.writerows(rows)
+        elif file_type == "csv":
+            with open(self.file_path,"r",encoding="utf-8") as file:
+              reader = csv.reader(file)
+              rows = []
+              for row in reader:
+                new_row = [
+                  cell for cell in row
+                ]
+                for i , cell in enumerate(new_row):
+                    for word , replacement in replacement_map.items():
+                        if word in cell: 
+                          new_row[i] = cell.replace(word, replacement)
+                rows.append(new_row)
+            with open(output_path , "w", encoding="utf-8",newline="") as file:
+                writer = csv.writer(file)
+                writer.writerows(rows)
         elif file_type == "xml":
             tree = ET.parse(self.file_path)
             root = tree.getroot()

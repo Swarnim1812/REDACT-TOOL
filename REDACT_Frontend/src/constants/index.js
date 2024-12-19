@@ -50,7 +50,7 @@ export const navigation = [
   {
     id: "0",
     title: "HOME",
-    url: "#",
+    url: "#hero",
   },
   {
     id: "1",
@@ -59,8 +59,8 @@ export const navigation = [
   },
   {
     id: "2",
-    title: "About Us",
-    url: "#footer",
+    title: "FAQs",
+    url: "#FAQs",
   },
   // {
   //   id: "3",
