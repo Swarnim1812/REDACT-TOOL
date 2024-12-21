@@ -4,7 +4,7 @@ const ChatFAQs = () => {
   const faqs = [
     { question: "What file formats are supported?", answer: "RE-DACT currently supports text files,images, PDFs, docx, CSV, Powerpoint presentations and videos." },
     { question: "Is my data secure during the process?", answer: "Absolutely. All redaction happens locally, and no data is stored or accessible to third parties." },
-    { question: "Can I control the level of redaction?", answer: "Yes! You can customize the degree of redaction from minimal to complete obfuscation using the gradation scale." },
+    { question: "Can I control the level of redaction?", answer: "Yes! You can customize the degree of redaction from minimal to complete obfuscation using the gradation scale and you can even provide the specific tags which should be redacted" },
     { question: "Is it easy to use?", answer: "Yes! The tool features a user-friendly interface designed for both technical and non-technical users." },
   ];
 

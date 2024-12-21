@@ -209,6 +209,7 @@ def redact_document_all():
                 
         from mimetypes import guess_type
         file_mimetype, _ = guess_type(redacted_output_path) # Dynamically determine MIME type based on the file extension
+        print(file_mimetype)
 
         return send_file(
             redacted_output_path,

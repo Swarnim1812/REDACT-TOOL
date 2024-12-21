@@ -124,8 +124,12 @@ function Redact_doc() {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a"); // Create a downloadable link
+        const fileType = file ? file.type.split("/")[0] : "";
+        const fileName = file.name.split('.').slice(0, -1).join('.'); // Extracts the name without the extension
+
         link.href = url;
-        link.download = response.file_name || "redacted_output"; // File name for the downloaded PDF
+        if (fileType == "image") link.download = "redacted_" + fileName || "redacted_output"; // File name for the downloaded PDF
+        else link.download = "redacted_" + file.name || "redacted_output";
         link.click();
 
         // Clean up the object URL
@@ -241,9 +245,13 @@ function Redact_doc() {
                   </label>
                   <select
                     value={useCustomGradation ? "custom" : gradation}
-                    onChange={(e) =>
-                      setUseCustomGradation(e.target.value === "custom")
-                    }
+                    onChange={(e) => {
+                      const isCustom = e.target.value === "custom";
+                      setUseCustomGradation(isCustom);
+                      if (!isCustom) {
+                        setCustomGradation([]); // Clear custom gradation when switching to slider
+                      }
+                    }}
                     className="w-full p-2 rounded-lg bg-gray-700 text-gray-300 cursor-pointer"
                   >
                     <option value="1">Slider</option>

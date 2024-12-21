@@ -9,6 +9,7 @@ from faker import Faker
 import json
 
 nlp = spacy.load("en_core_web_lg") # Load the English language model
+nlp.max_length = 1500000
 faker = Faker('en_IN') # Initialize Faker and set a seed for reproducibility
 Faker.seed(42)
 
@@ -475,11 +476,11 @@ def redact_json(sample_text,level,custom_tags):
     all_entities = sorted(all_entities, key=lambda x: x[0])
 
     # Display highlighted text with entities
-    print("Highlighted Text with Entities:")
+    # print("Highlighted Text with Entities:")
     # display(highlight_entities(doc, custom_entities))
 
     # Display entities in a table
-    print("\nEntity Table:")
+    # print("\nEntity Table:")
     entity_df = create_entity_dataframe(doc, custom_entities)
     # display(entity_df)
     # print("originallll text :",text)
@@ -503,13 +504,13 @@ def redact_json(sample_text,level,custom_tags):
 
         # Convert to DataFrame and display
         df = pd.DataFrame(list(merged_map.items()), columns=["Original Text", "Anonymized Text"])
-        print("\nMerged Replacement Map as DataFrame:")
-        print(df)
+        # print("\nMerged Replacement Map as DataFrame:")
+        # print(df)
 
         # Convert to dictionary format and display
-        print("\nMerged Replacement Map as Dictionary:")
+        # print("\nMerged Replacement Map as Dictionary:")
         x = json.dumps(merged_map, indent=4)
-        print(json.dumps(merged_map, indent=4))
+        # print(json.dumps(merged_map, indent=4))
         return merged_map
 
     # display_replacement_map(replacement_map)
@@ -518,7 +519,7 @@ def redact_json(sample_text,level,custom_tags):
     mmap = display_replacement_map(original_to_anonymized, replacement_map)
     print("......................................................")
 
-    print(mmap)
+    # print(mmap)
     return mmap
     
 from rouge_score import rouge_scorer
@@ -571,14 +572,65 @@ import json
 
 app = Flask(__name__)
 
+# @app.route('/redactionprocess-doc', methods=['POST'])
+# def redact():
+#     try:
+#         print("Request Headers:", request.headers)
+#         data = request.get_json() # Get JSON payload
+
+#         if not data or "text" not in data or "gradation_level" not in data:
+#             return jsonify({"error": "Invalid input. 'text' and 'gradation_level' are required."}), 400 # Check if data is valid
+
+#         text = data["text"]
+#         gradation_level = 1
+#         if data["gradation_level"] != "default":
+#             gradation_level = int(data["gradation_level"])
+#         custom_tags = data["custom_tags"]
+#         print("Received Gradation Level:", gradation_level)
+#         print("Received Custom Tags:", custom_tags)
+        
+#         redacted_output = redact_json(text, gradation_level, custom_tags)
+#         return jsonify(redacted_output), 200
+
+#     except Exception as e:
+#         print(f"An error occurred: {str(e)}")
+#         return jsonify({"error": e}), 500
+
+def chunk_text(text, max_chunk_size=1000):
+    """
+    Splits the text into chunks of a given size, ensuring sentences are not split.
+    
+    Args:
+        text (str): The input text to be chunked.
+        max_chunk_size (int): Maximum size of each chunk (default: 5000 characters).
+
+    Returns:
+        list: A list of text chunks.
+    """
+    chunks = []
+    current_chunk = ""
+    sentences = re.split(r'(?<=[.!?]) +', text)  # Split by sentence-ending punctuation
+
+    for sentence in sentences:
+        if len(current_chunk) + len(sentence) <= max_chunk_size:
+            current_chunk += sentence + " "
+        else:
+            chunks.append(current_chunk.strip())
+            current_chunk = sentence + " "
+    
+    if current_chunk:  # Append the last chunk
+        chunks.append(current_chunk.strip())
+
+    return chunks
+
 @app.route('/redactionprocess-doc', methods=['POST'])
 def redact():
     try:
         print("Request Headers:", request.headers)
-        data = request.get_json() # Get JSON payload
+        data = request.get_json()  # Get JSON payload
 
         if not data or "text" not in data or "gradation_level" not in data:
-            return jsonify({"error": "Invalid input. 'text' and 'gradation_level' are required."}), 400 # Check if data is valid
+            return jsonify({"error": "Invalid input. 'text' and 'gradation_level' are required."}), 400  # Check if data is valid
 
         text = data["text"]
         gradation_level = 1
@@ -587,15 +639,22 @@ def redact():
         custom_tags = data["custom_tags"]
         print("Received Gradation Level:", gradation_level)
         print("Received Custom Tags:", custom_tags)
-        
-        redacted_output = redact_json(text, gradation_level, custom_tags)
-        return jsonify(redacted_output), 200
+
+        # Split text into chunks
+        chunks = chunk_text(text)
+        print(f"Text split into {len(chunks)} chunks.")
+
+        # Process each chunk individually
+        combined_replacement_map = {}
+
+        for chunk in chunks:
+            replacement_map = redact_json(chunk, gradation_level, custom_tags)
+            combined_replacement_map.update(replacement_map)
+        return jsonify(combined_replacement_map), 200
 
     except Exception as e:
         print(f"An error occurred: {str(e)}")
-        return jsonify({"error": e}), 500
-
-      
+        return jsonify({"error": str(e)}), 500
       
 if __name__ == '__main__':
     # Run the Flask application on port 8000

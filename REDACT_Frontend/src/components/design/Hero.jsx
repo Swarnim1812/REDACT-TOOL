@@ -176,7 +176,6 @@ export const BackgroundCircles = ({ parallaxRef }) => {
           left: 50%;
           animation: revolveCircle1 8s infinite linear;
           transform-origin: center;
-          animation-delay: 1s;
         }
 
         .animate-revolveCircle2 {
@@ -185,7 +184,7 @@ export const BackgroundCircles = ({ parallaxRef }) => {
           left: 50%;
           animation: revolveCircle2 8s infinite linear;
           transform-origin: center;
-          animation-delay: 2s;
+          animation-delay: 1s;
         }
 
         .animate-revolveCircle3 {
@@ -194,7 +193,6 @@ export const BackgroundCircles = ({ parallaxRef }) => {
           left: 50%;
           animation: revolveCircle3 10s infinite linear;
           transform-origin: center;
-          animation-delay: 3s;
         }
 
         .animate-revolveCircle4 {
@@ -203,7 +201,7 @@ export const BackgroundCircles = ({ parallaxRef }) => {
           left: 50%;
           animation: revolveCircle4 10s infinite linear;
           transform-origin: center;
-          animation-delay: 3s;
+          animation-delay: 1s;
         }
         .animate-revolveCircle5 {
           position: absolute;
@@ -211,7 +209,6 @@ export const BackgroundCircles = ({ parallaxRef }) => {
           left: 50%;
           animation: revolveCircle4 9s infinite linear;
           transform-origin: center;
-          animation-delay: 3s;
         }
         .animate-revolveCircle6 {
           position: absolute;
@@ -219,7 +216,7 @@ export const BackgroundCircles = ({ parallaxRef }) => {
           left: 50%;
           animation: revolveCircle4 10s infinite linear;
           transform-origin: center;
-          animation-delay: 6s;
+          animation-delay: 1s;
         }
       `}</style>
     </div>

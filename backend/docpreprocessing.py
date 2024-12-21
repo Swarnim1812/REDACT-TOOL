@@ -243,23 +243,26 @@ import csv
 import os
 import requests
 
-class CSVProcessor:
-    def __init__(self, chunk_size=1000, temp_dir="temp_chunks", output_dir="processed_chunks"):
+
+class CSVProcessor(FileProcessor):
+    def __init__(self, file_path, chunk_size=2000, temp_dir="temp_chunks", output_dir="processed_chunks"):
+        super().__init__(file_path)  # Initialize the base class
         self.chunk_size = chunk_size
         self.temp_dir = temp_dir
         self.output_dir = output_dir
 
-    def split_csv(self, file_path):
-        """Split a large CSV file into smaller chunks."""
+    def extract_text(self):
+        """
+        Extract text from a large CSV file in chunks and return the combined text.
+        """
         os.makedirs(self.temp_dir, exist_ok=True)
-        file_count = 0
+        file_idx = 0
+        text = ""
 
-        with open(file_path, "r", encoding="utf-8") as file:
-            print(file_path)
-            reader = csv.reader(file)
-            print(reader)
-            headers = next(reader)
-            
+        with open(self.file_path, 'r', encoding='utf-8') as source:
+            reader = csv.reader(source)
+            headers = next(reader, None)
+
             if not headers:
                 raise ValueError("The CSV file does not contain headers or is empty.")
 
@@ -269,115 +272,106 @@ class CSVProcessor:
                     continue
                 chunk.append(row)
                 if index % self.chunk_size == 0:
-                    output_file = os.path.join(self.temp_dir, f"chunk_{file_count}.csv")
-                    self._write_csv(output_file, headers, chunk)
-                    file_count += 1
+                    chunk_text = "\n".join([", ".join(row) for row in chunk])
+                    text += chunk_text + "\n"
                     chunk = []
 
-            # Handle remaining rows
             if chunk:
-                output_file = os.path.join(self.temp_dir, f"chunk_{file_count}.csv")
-                self._write_csv(output_file, headers, chunk)
-        return self.temp_dir
+                chunk_text = "\n".join([", ".join(row) for row in chunk])
+                text += chunk_text + "\n"
+        return text
+
+    def replace_text(self, replacement_map, output_path="output.csv"):
+        """
+        Replace text in a large CSV file using chunking.
+        """
+        os.makedirs(self.temp_dir, exist_ok=True)
+        os.makedirs(self.output_dir, exist_ok=True)
+        file_idx = 0
+
+        with open(self.file_path, 'r', encoding='utf-8') as source:
+            reader = csv.reader(source)
+            headers = next(reader, None)
+
+            if not headers:
+                raise ValueError("The CSV file does not contain headers or is empty.")
+
+            chunk = []
+            for index, row in enumerate(reader, start=1):
+                if not any(row):  # Skip empty rows
+                    continue
+                chunk.append(row)
+                if index % self.chunk_size == 0:
+                    self._process_chunk(headers, chunk, replacement_map, file_idx)
+                    file_idx += 1
+                    chunk = []
+
+            if chunk:
+                self._process_chunk(headers, chunk, replacement_map, file_idx)
+
+        self._merge_chunks(output_path)
+        self.cleanup()
+
+    def _process_chunk(self, headers, chunk, replacement_map, file_idx):
+        """
+        Process a single chunk by applying replacements and saving it.
+        """
+        processed_chunk = []
+
+        for row in chunk:
+            processed_row = []
+            for cell in row:
+                # Apply replacements sequentially
+                for word, replacement in replacement_map.items():
+                    if word in cell:
+                        cell = cell.replace(word, replacement)
+                processed_row.append(cell)
+            processed_chunk.append(processed_row)
+
+        chunk_path = os.path.join(self.temp_dir, f"chunk_{file_idx}.csv")
+        self._write_csv(chunk_path, headers, processed_chunk)
+
 
     def _write_csv(self, file_path, headers, rows):
-        """Write a CSV file with the given headers and rows."""
+        """
+        Write a CSV file with the given headers and rows.
+        """
         with open(file_path, "w", encoding="utf-8", newline="") as file:
             writer = csv.writer(file)
-            # writer.writerow(headers)
+            writer.writerow(headers)
             writer.writerows(rows)
 
-    
-    def process_chunk_remote(self, file_path, endpoint_url, gradation):
-        """Send the chunk to an endpoint, get the processed data, and save it."""
-        os.makedirs(self.output_dir, exist_ok=True)
-
-        with open(file_path, "r", encoding="utf-8", newline="") as file:
-            reader = csv.reader(file)
-            text = "/n".join([", ".join(row) for row in reader])
-            
-        payload2 = {
-            "text": text,
-            "gradation_level": gradation
-        }
-        print(payload2)
-        response = requests.post(endpoint_url, json=payload2, headers={"Content-Type": "application/json"})
-        if response.status_code != 200:
-            print(f"Failed to process chunk {file_path}: {response.text}")
-            return
-        
-        replacement_map = response.json() if isinstance(response.json(), dict) else {} 
-        print(replacement_map)
-        with open(file_path,"r",encoding="utf-8") as file:
-              reader = csv.reader(file)
-              rows = []
-              for row in reader:
-                new_row = [
-                  cell for cell in row
-                ]
-                for i , cell in enumerate(new_row):
-                    for word , replacement in replacement_map.items():
-                        if word in cell: 
-                          new_row[i] = cell.replace(word, replacement)
-                    rows.append(new_row)
-        processed_file_path = os.path.join(self.output_dir, os.path.basename(file_path))
-
-        with open(processed_file_path , "w", encoding="utf-8",newline="") as file:
-            writer = csv.writer(file)
-            writer.writerows(rows)
-        
-        # Save the processed chunk
-        # processed_file_path = os.path.join(self.output_dir, os.path.basename(file_path))
-        # with open(processed_file_path, "w", encoding="utf-8") as processed_file:
-        #     processed_file.write(response)
-
-    def merge_chunks(self, output_file):
-        """Merge processed chunks into a single output CSV file."""
+    def _merge_chunks(self, output_file):
+        """
+        Merge processed chunks into a single output CSV file.
+        """
         chunk_files = sorted(
-            [os.path.join(self.output_dir, file) for file in os.listdir(self.output_dir) if file.endswith(".csv")]
+            [os.path.join(self.temp_dir, file) for file in os.listdir(self.temp_dir) if file.endswith(".csv")]
         )
-        merged_rows = []
 
-        for chunk_file in chunk_files:
-            with open(chunk_file, "r", encoding="utf-8") as file:
-                reader = csv.reader(file)
-                headers = next(reader)
-                merged_rows.extend(reader)
-                
-                # if headers is None:
-                #     headers = next(reader)  # Read headers from the first chunk
-                # else:
-                #     next(reader, None)  # Skip headers for subsequent chunks
-        print("hiiiiii---------------------")
-        print(len(merged_rows))
-        self._write_csv(output_file, headers, merged_rows)
+        with open(output_file, "w", encoding="utf-8", newline="") as output:
+            writer = csv.writer(output)
+            headers_written = False
+
+            for chunk_file in chunk_files:
+                with open(chunk_file, "r", encoding="utf-8") as chunk:
+                    reader = csv.reader(chunk)
+                    headers = next(reader, None)
+                    if not headers_written:
+                        writer.writerow(headers)
+                        headers_written = True
+                    writer.writerows(reader)
 
     def cleanup(self):
-        """Remove temporary and processed files."""
+        """
+        Remove temporary files.
+        """
         import shutil
         shutil.rmtree(self.temp_dir, ignore_errors=True)
         shutil.rmtree(self.output_dir, ignore_errors=True)
 
-# if _name_ == "_main_":
-#     # Parameters
-#     input_file = "large_file.csv"  # Path to your large CSV file
-#     output_file = "processed_file.csv"  # Path to save the final merged output
-#     endpoint_url = "https://example.com/api/process-csv"  # Your endpoint URL
 
-#     # Initialize processor
-#     processor = CSVProcessor(chunk_size=1000)
 
-#     # Steps
-#     processor.split_csv(input_file)
-
-#     for chunk_file in os.listdir(processor.temp_dir):
-#         processor.process_chunk_remote(os.path.join(processor.temp_dir, chunk_file), endpoint_url)
-
-#     processor.merge_chunks(output_file)
-#     processor.cleanup()
-
-#     print(f"Processed file saved at: {output_file}")
-# Update the DocumentProcessorFactory to support XLSX files
 class DocumentProcessorFactory:
     @staticmethod
     def create_processor(file_path):
@@ -388,36 +382,11 @@ class DocumentProcessorFactory:
             return DOCXProcessor(file_path)
         elif ext == ".pptx":
             return PPTXProcessor(file_path)
-        elif ext in [".txt",".csv", ".xml"]:
+        elif ext in [".txt",".xml"]:
             return TextFileProcessor(file_path)
         elif ext == ".xlsx":
             return XLSXProcessor(file_path)
+        elif ext == ".csv":
+            return CSVProcessor(file_path)
         else:
             raise ValueError(f"Unsupported file type: {ext}")
-
-# Factory Class
-# class DocumentProcessorFactory:
-#     @staticmethod
-#     def create_processor(file_path):
-#         ext = os.path.splitext(file_path)[1].lower()
-#         if ext == ".pdf":
-#             return PDFProcessor(file_path)
-#         elif ext == ".docx":
-#             return DOCXProcessor(file_path)
-#         elif ext == ".pptx":
-#             return PPTXProcessor(file_path)
-#         elif ext in [".txt", ".csv", ".xml"]:
-#             return TextFileProcessor(file_path)
-#         else:
-#             raise ValueError(f"Unsupported file type: {ext}")
-
-# # Example Usage
-# if __name__ == "__main__":
-#     file_path = "test.pdf"  # Change to your file
-
-#     replacement_map = {"Aryaman": "Yemen", "Name": "Dame"}
-
-#     processor = DocumentProcessorFactory.create_processor(file_path)
-#     print(processor.extract_text())
-
-#     processor.replace_text(replacement_map)
