@@ -117,7 +117,7 @@ export const BackgroundCircles = ({ parallaxRef }) => {
         <div className="absolute w-5 h-5 bg-gradient-to-b from-[#DD734F] to-[#1A1A32] rounded-full animate-revolveCircle6" />
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes revolveCircle1 {
           0% {
             transform: rotate(0deg) translateX(190px) rotate(0deg);

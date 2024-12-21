@@ -196,7 +196,7 @@ def merge_audio_video(input_video, input_audio, output_video):
     """
     try:
         subprocess.run([
-            "ffmpeg", "-i", input_video, "-i", input_audio, 
+            "ffmpeg", "-y", "-i", input_video, "-i", input_audio, 
             "-c:v", "copy", "-c:a", "aac", "-strict", "experimental", 
             output_video
         ], check=True, capture_output=True, text=True)
@@ -295,5 +295,5 @@ def download_video(filename):
         return jsonify({"error": "Internal server error"}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=8004)
 

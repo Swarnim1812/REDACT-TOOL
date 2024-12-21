@@ -5,6 +5,7 @@ import { NavLink } from "react-router-dom";
 import grid from "../assets/grid.png";
 import { Gradient2 } from "./design/Roadmap";
 import Button from "./Button";
+import { ThreeDots } from "react-loader-spinner";
 
 function Redact_doc() {
   const [file, setFile] = useState(null);
@@ -273,15 +274,31 @@ function Redact_doc() {
                     </div>
                   )}
                 </div>
-                <Button
-                  onClick={handleRedact2}
-                  className={`w-full sm:w-[24rem] ${loading ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
-                  disabled={loading}
-                  white
-                >
-                  {loading ? "Processing and Downloading..." : "Redact and Download"}
-                </Button>
+                <div className="flex flex-col">
+                  <Button
+                    onClick={handleRedact2}
+                    className={`w-full sm:w-[24rem] ${loading ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
+                    disabled={loading}
+                    white
+                  >
+                    {loading ? "Processing and Downloading..." : "Redact and Download"}
+                  </Button>
+                  {loading && (
+                    <div className="flex justify-center mt-4">
+                      <ThreeDots
+                        height="80"
+                        width="80"
+                        radius="9"
+                        color="#00BFFF"
+                        ariaLabel="three-dots-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={loading}
+                      />
+                    </div>
+                  )}
+                </div>
                 <Gradient2 />
               </div>
             </div>
