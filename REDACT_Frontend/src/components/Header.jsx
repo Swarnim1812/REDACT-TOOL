@@ -1,7 +1,6 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { disablePageScroll, enablePageScroll } from "scroll-lock";
-
-import { brainwave, TeamLogo, TeamLogo2 } from "../assets";
+import { TeamLogo2 } from "../assets";
 import { navigation } from "../constants";
 import Button from "./Button";
 import MenuSvg from "../assets/svg/MenuSvg";

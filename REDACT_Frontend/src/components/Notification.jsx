@@ -1,6 +1,6 @@
 import { notification1, sphere } from "../assets";
 import { notificationImages } from "../constants";
-import { anony, brainwaveSymbol } from "../assets";
+
 const Notification = ({ className, title }) => {
   return (
     <div

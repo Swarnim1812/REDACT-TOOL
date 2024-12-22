@@ -284,12 +284,30 @@ def download_video(filename):
             logger.error(f"File not found: {full_path}")
             return jsonify({"error": "File not found"}), 404
 
-        return send_file(
-            full_path, 
+        # return send_file(
+        #     full_path, 
+        #     mimetype='video/mp4',
+        #     as_attachment=True,
+        #     download_name=filename
+        # )
+        
+        response = send_file(
+            full_path,
             mimetype='video/mp4',
             as_attachment=True,
             download_name=filename
         )
+
+        @response.call_on_close
+        def cleanup():
+            try:
+                if os.path.exists(full_path):
+                    os.remove(full_path)
+                    logger.info(f"Removed downloaded file: {full_path}")
+            except Exception as cleanup_error:
+                logger.warning(f"Error cleaning up {full_path}: {cleanup_error}")
+
+        return response
     except Exception as e:
         logger.error(f"Error downloading video: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
