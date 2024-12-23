@@ -29,9 +29,9 @@ const Hero = () => {
       id="hero"
     >
       <div className="container relative" ref={parallaxRef}>
-        <div className="relative z-1 max-w-[62rem] mx-auto text-center mb-[3.875rem] md:mb-20 lg:mb-[6.25rem]">
+        <div className="flex items-center flex-col relative z-1 max-w-[62rem] mx-auto text-center mb-[3.875rem] md:mb-20 lg:mb-[6.25rem]">
           <h1
-            className={`text-7xl mb-10 font-bold transition-opacity duration-1000 ${fadeIn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            className={`hover_target text-7xl mb-10 font-bold transition-opacity duration-1000 ${fadeIn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
               }`}
           >
             RE-DACT
@@ -43,13 +43,13 @@ const Hero = () => {
             RE-DACT: A cutting-edge redaction and anonymization tool ensuring
             secure, customizable, and structured data handling across multiple formats.
           </p>
-          <NavLink to="/get-started">
-            <Button white>Get started</Button>
+          <NavLink className="hover_target" to="/get-started">
+            <Button white><span className="hover_target">Get started</span></Button>
           </NavLink>
         </div>
         <div className="relative max-w-[23rem] mx-auto md:max-w-5xl xl:mb-24">
-          <div className="relative z-1 p-0.5 rounded-2xl bg-conic-gradient">
-            <div className="relative  rounded-[1rem]">
+          <div className="hover-target relative z-1 p-0.5 rounded-2xl bg-conic-gradient">
+            <div className="relative rounded-[1rem]">
               <div className="h-[1.4rem] bg-n-10 rounded-t-[0.9rem]" />
 
               <div className="rounded-b-[0.9rem] overflow-hidden md:aspect-[688/490] lg:aspect-[1024/490]">

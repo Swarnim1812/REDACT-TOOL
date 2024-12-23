@@ -8,6 +8,7 @@ import Button from "./Button";
 import grid from "../assets/grid.png";
 import { Gradient2, Gradient4 } from "./design/Roadmap";
 import { ThreeDots } from "react-loader-spinner";
+import { Header2 } from "./Header";
 
 function Redact_Video() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -88,108 +89,111 @@ function Redact_Video() {
     }
   };
   return (
-    <Section className="min-h-screen" id="roadmap">
-      <Gradient4 />
-      <Heading
-        className="text-center flex flex-col items-center"
-        tag="READY TO GET STARTED"
-        title="Choose Your Video File"
-        text=""
-      />
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.8, ease: "easeInOut" }}
-      >
-        <div className="text-white flex flex-col items-center justify-center px-4">
-          <div className="md:flex even:md:translate-y-[4rem] p-0.25 rounded-[2.5rem] bg-conic-gradient overflow-hidden">
-            <div className="p-10 sm:p-12 md:p-16 bg-[#090018] rounded-[2.4375rem] w-full max-w-[43rem] h-full z-10 relative">
-              <img
-                className="absolute left-1/2 transform -translate-x-1/2 max-w-full z-[-1] hidden lg:block top-0"
-                src={grid}
-                width={520}
-                height={550}
-                alt="Grid"
-              />
-              <div className="h-auto w-full max-w-4xl">
-                <label className="block text-xl font-semibold text-center text-gray-300 mb-10">
-                  Upload Your Video
-                </label>
-                <div className="flex items-center justify-center mb-6">
-                  <label className="block bg-green-900 text-white rounded-lg cursor-pointer hover:bg-blue-600 text-center font-medium text-sm px-5 py-[1.5rem] bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 transition">
-                    Choose File - (MP4, AVI, MOV)
-                    <input
-                      type="file"
-                      accept="video/*"
-                      className="hidden"
-                      onChange={handleFileChange}
-                    />
+    <>
+      <Header2 />
+      <Section className="min-h-screen overflow-hidden " id="roadmap">
+        <Gradient4 />
+        <Heading
+          className="text-center flex flex-col items-center pt-20"
+          tag="READY TO GET STARTED"
+          title="Choose Your Video File"
+          text=""
+        />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+        >
+          <div className="text-white flex flex-col items-center justify-center px-4">
+            <div className="md:flex even:md:translate-y-[4rem] p-0.25 rounded-[2.5rem] bg-conic-gradient overflow-hidden">
+              <div className="p-10 sm:p-12 md:p-16 bg-[#090018] rounded-[2.4375rem] w-full max-w-[43rem] h-full z-10 relative">
+                <img
+                  className="absolute left-1/2 transform -translate-x-1/2 max-w-full z-[-1] hidden lg:block top-0"
+                  src={grid}
+                  width={520}
+                  height={550}
+                  alt="Grid"
+                />
+                <div className="h-auto w-full max-w-4xl">
+                  <label className="block text-xl font-semibold text-center text-gray-300 mb-10">
+                    Upload Your Video
                   </label>
-                </div>
-                <div className='text-center mb-3 p-1 h-[6rem]'>
-                  {selectedFile && (
-                    <div className="mt-4 text-sm text-gray-400 text-center mb-6">
-                      <p>{selectedFile.name}</p>
-                      <p className="text-xs text-gray-500 mt-3">Video File</p>
+                  <div className="flex items-center justify-center mb-6">
+                    <label className="block bg-green-900 text-white rounded-lg cursor-pointer hover:bg-blue-600 text-center font-medium text-sm px-5 py-[1.5rem] bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 transition">
+                      Choose File - (MP4, AVI, MOV)
+                      <input
+                        type="file"
+                        accept="video/*"
+                        className="hidden"
+                        onChange={handleFileChange}
+                      />
+                    </label>
+                  </div>
+                  <div className='text-center mb-3 p-1 h-[6rem]'>
+                    {selectedFile && (
+                      <div className="mt-4 text-sm text-gray-400 text-center mb-6">
+                        <p>{selectedFile.name}</p>
+                        <p className="text-xs text-gray-500 mt-3">Video File</p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mb-6 w-full flex justify-center">
+                    <Button
+                      onClick={handleUpload}
+                      className="w-full sm:w-[30rem]"
+                      white
+                    >
+                      Process Video
+                    </Button>
+                  </div>
+
+                  {uploadStatus && (
+                    <div className="flex flex-col items-center justify-center mt-4">
+                      <p className={`text-base font-medium ${uploadStatus.includes("Error") ? "text-red-500" : "text-green-500"}`}>
+                        {uploadStatus}
+                      </p>
+                    </div>
+                  )}
+                  {loading && (
+                    <div className="flex flex-col items-center justify-center mt-4">
+                      <ThreeDots
+                        height="80"
+                        width="80"
+                        radius="9"
+                        color="#00BFFF"
+                        ariaLabel="three-dots-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={loading}
+                      />
                     </div>
                   )}
                 </div>
 
-                <div className="mb-6 w-full flex justify-center">
-                  <Button
-                    onClick={handleUpload}
-                    className="w-full sm:w-[30rem]"
-                    white
-                  >
-                    Process Video
-                  </Button>
-                </div>
 
-                {uploadStatus && (
-                  <div className="flex flex-col items-center justify-center mt-4">
-                    <p className={`text-base font-medium ${uploadStatus.includes("Error") ? "text-red-500" : "text-green-500"}`}>
-                      {uploadStatus}
-                    </p>
-                  </div>
-                )}
-                {loading && (
-                  <div className="flex flex-col items-center justify-center mt-4">
-                    <ThreeDots
-                      height="80"
-                      width="80"
-                      radius="9"
-                      color="#00BFFF"
-                      ariaLabel="three-dots-loading"
-                      wrapperStyle={{}}
-                      wrapperClass=""
-                      visible={loading}
-                    />
+                {processedVideoUrl && (
+                  <div className="flex justify-center mt-6">
+                    <button
+                      onClick={handleDownload}
+                      className="bg-green-600 px-4 py-2 rounded-lg text-lg text-white font-semibold hover:bg-green-500 transition"
+                    >
+                      Download Processed Video
+                    </button>
                   </div>
                 )}
               </div>
-
-
-              {processedVideoUrl && (
-                <div className="flex justify-center mt-6">
-                  <button
-                    onClick={handleDownload}
-                    className="bg-green-600 px-4 py-2 rounded-lg text-lg text-white font-semibold hover:bg-green-500 transition"
-                  >
-                    Download Processed Video
-                  </button>
-                </div>
-              )}
+            </div>
+            <div className="mt-20">
+              <NavLink to="/get-started">
+                <Button>BACK</Button>
+              </NavLink>
             </div>
           </div>
-          <div className="mt-20">
-            <NavLink to="/get-started">
-              <Button>BACK</Button>
-            </NavLink>
-          </div>
-        </div>
-      </motion.div>
-    </Section>
+        </motion.div>
+      </Section>
+    </>
   );
   // return (
 

@@ -26,7 +26,7 @@ import React, { useState } from "react";
 import ButtonGradient from "./assets/svg/ButtonGradient";
 import Allroutes from "./components/Allroutes";
 import Loader from "./components/Loader";
-
+import CustomCursor from "./components/CustomCursor";
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -40,6 +40,7 @@ const App = () => {
         <Loader onLoadComplete={handleLoadComplete} />
       ) : (
         <>
+          <CustomCursor />
           <Allroutes />
           <ButtonGradient />
         </>

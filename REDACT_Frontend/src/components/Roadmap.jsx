@@ -15,9 +15,9 @@ const fadeInVariants = {
 };
 
 const Roadmap = () => (
-  <Section className=" h-screen">
+  <Section className=" h-screen pt">
     <motion.div
-      className="container md:pb-10"
+      className=" container md:pb-10 pt-20"
       initial="hidden"
       animate="visible"
       variants={{
@@ -91,7 +91,7 @@ const Roadmap = () => (
 
       <motion.div variants={fadeInVariants} className="flex justify-center mt-12 md:mt-15 xl:mt-20">
         <NavLink to="/">
-          <Button>BACK TO HOME</Button>
+        <Button><span className="hover_target ">BACK TO HOME</span></Button>
         </NavLink>
       </motion.div>
     </motion.div>

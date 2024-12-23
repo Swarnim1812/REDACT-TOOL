@@ -36,11 +36,11 @@ def selective_redact_text(sample_text, level, custom_tags):
 
     tags_to_redact = redaction_levels[level]
     custom_tags_len = len(json.loads(custom_tags))
-    print("custom_tags_len",custom_tags_len)
+    # print("custom_tags_len",custom_tags_len)
     if custom_tags_len > 0:
         tags_to_redact = custom_tags
-    print(level)
-    print(tags_to_redact)
+    # print(level)
+    # print(tags_to_redact)
     # Process the text to extract entities
     doc, custom_entities = process_text_with_matcher(nlp, sample_text)
     
@@ -248,11 +248,11 @@ def process_text_with_matcher(nlp, text):
     custom_entities = []
 
     # Debugging: print the matches
-    print("Matcher matches:")
+    # print("Matcher matches:")
     for match_id, start, end in matches:
         span = doc[start:end]
         label = nlp.vocab.strings[match_id]
-        print(f"Match: {span.text}, Label: {label}")
+        # print(f"Match: {span.text}, Label: {label}")
         custom_entities.append((span, label))
 
     # Process Aadhaar numbers
@@ -517,7 +517,7 @@ def redact_json(sample_text,level,custom_tags):
     # display_replacement_map(original_to_anonymized)
 
     mmap = display_replacement_map(original_to_anonymized, replacement_map)
-    print("......................................................")
+    # print("......................................................")
 
     # print(mmap)
     return mmap
@@ -646,10 +646,12 @@ def redact():
 
         # Process each chunk individually
         combined_replacement_map = {}
-
+        i = 1
         for chunk in chunks:
+            print(i, end=", ")
             replacement_map = redact_json(chunk, gradation_level, custom_tags)
             combined_replacement_map.update(replacement_map)
+            i += 1
         return jsonify(combined_replacement_map), 200
 
     except Exception as e:

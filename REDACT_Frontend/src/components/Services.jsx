@@ -6,6 +6,8 @@ import {
   Gradient,
 } from "./design/Services";
 import ChatFAQs from "./ChatFAQs";
+import Button from "./Button";
+import { NavLink } from "react-router-dom";
 
 const Services = () => {
   return (
@@ -55,7 +57,7 @@ const Services = () => {
 
             <div className="p-2 bg-n-7 rounded-3xl overflow-hidden lg:min-h-[46rem]">
               <div className="py-5 px-4 xl:px-8">
-                <h4 className="h4 mb-4">Frequently Asked Questions</h4>
+                <h4 className="hover_target h4 mb-4">Frequently Asked Questions</h4>
               </div>
 
               <div className="relative h-[20rem] bg-none rounded-xl overflow-hidden md:h-[35rem]">
@@ -65,6 +67,11 @@ const Services = () => {
           </div>
 
           <Gradient />
+        </div>
+        <div className="flex justify-center xl:mt-20">
+          <NavLink to="/get-started">
+            <Button><span className="hover_target ">GET STARTED</span></Button>
+          </NavLink>
         </div>
       </div>
     </Section>

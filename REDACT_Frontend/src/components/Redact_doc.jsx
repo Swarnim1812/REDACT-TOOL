@@ -7,6 +7,7 @@ import grid from "../assets/grid.png";
 import { Gradient2 } from "./design/Roadmap";
 import Button from "./Button";
 import { ThreeDots } from "react-loader-spinner";
+import { Header2 } from "./Header";
 
 function Redact_doc() {
   const [file, setFile] = useState(null);
@@ -153,15 +154,16 @@ function Redact_doc() {
 
   return (
     <>
+      <Header2 />
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 1, ease: "easeInOut" }}
       >
-        <Section className="min-h-screen" id="roadmap">
+        <Section className="min-h-screen overflow-hidden" id="roadmap">
           <Heading
-            className="text-center flex flex-col items-center"
+            className="pt-10 text-center flex flex-col items-center"
             tag="REDACT YOUR FILE"
             title="Document Redaction Tool"
             text=""

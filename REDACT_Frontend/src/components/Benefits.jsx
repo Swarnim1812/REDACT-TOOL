@@ -12,8 +12,8 @@ const Benefits = () => {
       <div className="container relative z-2">
         <Heading
           className="md:max-w-md lg:max-w-2xl"
-          title="Benefits of Redact"
-          text="Redact provides a range of features to help users protect their data and privacy."
+          title="Benefits of Re-dact"
+          text="Re-dact provides a range of features to help users protect their data and privacy."
         />
 
         <div className="flex flex-wrap gap-10 mb-10">
@@ -43,7 +43,7 @@ const Benefits = () => {
                     alt={item.title}
                   />
                   <p className="ml-auto font-code text-xs font-bold text-n-1 uppercase tracking-wider"></p>
-                  <Arrow />
+                  {/* <Arrow /> */}
                 </div>
               </div>
 
