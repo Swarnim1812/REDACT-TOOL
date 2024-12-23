@@ -44,7 +44,7 @@ Follow these steps to clone and run the RE-DACT project on your local machine:
 3. Install the required dependencies:
    
    ```bash
-   pip install flask flask-cors werkzeug pandas requests cryptography spacy PyPDF2 opencv-python imutils ultralytics paddleocr python-docx openpyxl matplotlib faker fpdf
+   pip install flask flask-cors werkzeug pandas requests cryptography spacy PyPDF2 opencv-python imutils ultralytics cvzone paddleocr python-docx openpyxl matplotlib faker fpdf
    ```
   ##### Key dependencies used in the project:
 
@@ -65,7 +65,8 @@ Follow these steps to clone and run the RE-DACT project on your local machine:
   - matplotlib: For data visualization.
   - faker: For generating synthetic data.
   - fpdf: For generating PDF files.
-
+  - cvzone For Computer vision tasks.
+    
 3. Start the backend by running the following commands in separate terminals, all within the backend directory:
    - Terminal 1:
 
@@ -82,6 +83,12 @@ Follow these steps to clone and run the RE-DACT project on your local machine:
        ```
        python freetext_code.py
        ```
+   - Terminal 4:
+
+     ```
+     python app.py
+     ```
+     
 #### Frontend Setup:
 
 1. Navigate to the frontend directory:
