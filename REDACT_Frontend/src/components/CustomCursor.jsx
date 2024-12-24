@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 const CustomCursor = () => {
-  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
-  const [cursorScale, setCursorScale] = useState(1);
+  const [cursorPosition, setCursorPosition] = useState(null);
+  const [cursorScale, setCursorScale] = useState(0.4);
 
   useEffect(() => {
     const moveCursor = (e) => {
@@ -35,7 +35,9 @@ const CustomCursor = () => {
       window.removeEventListener("mouseout", handleMouseLeave);
     };
   }, []);
-
+  if (!cursorPosition) {
+    return null; // Hide the cursor until the first mousemove event
+  }
   return (
     <motion.div
       className="custom-cursor"

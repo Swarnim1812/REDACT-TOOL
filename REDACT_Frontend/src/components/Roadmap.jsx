@@ -74,7 +74,7 @@ const Roadmap = () => (
                           hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-[40px] rounded-xl text-sm px-[1em] py-6 text-center me-2 mb-2 w-[17em] flex items-center justify-center font-bold`}
                       >
                         {item.btn_text}
-                        <GoArrowRight className="ml-3 text-2xl" />
+                        <GoArrowRight className="hover_target ml-3 text-2xl" />
                       </button>
                     </NavLink>
                   </div>

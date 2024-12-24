@@ -113,7 +113,7 @@
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
-  transition: transform 0.3s ease;
+  transition: transform 0.2s ease;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.3);
   animation: glow 1.3s infinite alternate;
 }
