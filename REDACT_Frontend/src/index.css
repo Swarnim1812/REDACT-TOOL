@@ -128,3 +128,8 @@
 body {
   cursor: none;
 }
+@media (max-width: 1024px) {
+  body {
+    cursor: default; /* Default pointer for smaller screens */
+  }
+}

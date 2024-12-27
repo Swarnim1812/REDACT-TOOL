@@ -30,14 +30,14 @@ const Services = () => {
                 />
               </div>
               <div className="absolute inset-0 px-4 flex flex-col justify-end bg-gradient-to-b from-n-8/0 to-n-8/90 lg:p-10">
-                <h5 className="h6 mb-1">Legal Document Redaction:</h5>
+                <h5 className="h6 mb-1">Legal document and financial records Redaction:</h5>
                 <p className="body-2 mb-[1rem] text-n-3">
-                  Remove confidential details such as names, addresses, and case identifiers.
+                  Remove confidential details like names, addresses, case identifiers, and financial data.
                 </p>
-                <h5 className="h6 mb-1">Financial Records:</h5>
+                {/* <h5 className="h6 mb-1">Financial Records:</h5>
                 <p className="body-2 mb-[1rem] text-n-3">
                   Redact account numbers, transaction details, or other sensitive financial identifiers.
-                </p>
+                </p> */}
                 <h5 className="h6 mb-1">Research and Data Sharing:</h5>
                 <p className="body-2 mb-[1rem] text-n-3">
                   Anonymize participant data for academic research or open datasets.
