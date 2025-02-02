@@ -44,7 +44,7 @@ Follow these steps to clone and run the RE-DACT project on your local machine:
 3. Install the required dependencies:
    
    ```bash
-   pip install flask flask-cors werkzeug pandas requests cryptography spacy PyPDF2 opencv-python imutils ultralytics cvzone paddleocr python-docx openpyxl matplotlib faker fpdf
+   pip install flask flask-cors werkzeug pandas requests cryptography spacy PyPDF2 opencv-python imutils ultralytics cvzone paddleocr python-docx openpyxl matplotlib faker fpdf paddlepaddle PyMuPDF python-pptx omegaconf
    ```
   ##### Key dependencies used in the project:
 
